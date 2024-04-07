@@ -27,9 +27,7 @@ async def first_command(interaction):
 
 @client.event
 async def on_ready():
-    await tree.sync(guild=discord.Object(id=Your guild id))
+    await tree.sync()
     print("Ready!")
-
-
 
 client.run('MTIyNjQ2NzAzODExMzgyODg4NA.GZDDBi.R6Pu3j0LA0FcN8SdlzTWYua98Par-fOmOaPw0U')
