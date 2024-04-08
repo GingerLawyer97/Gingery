@@ -21,7 +21,21 @@ tree = app_commands.CommandTree(client)
 )
 
 async def help(interaction):
-    await interaction.response.send_message("List of Commands:\n1. /hello\n2. /rolladice\n3. /yesorno\n4. /help")
+    await interaction.response.send_message("List of Commands:\n1. /hello\n2. /rolladice\n3. /yesorno\n4. /flipacoin")
+
+@tree.command(
+        name="flipacoin",
+        description="Flip's a Coin"
+)
+
+async def flipacoin(interaction):
+    coinflip = randrange(-1,2)
+    await interaction.response.send_message("Flipping a Coin...")
+    time.sleep(2)
+    if coinflip == 1:
+        await interaction.followup.send("Heads!")
+    else:
+        await interaction.followup.send("Tails!")
 
 @tree.command(
         name="yesorno",
