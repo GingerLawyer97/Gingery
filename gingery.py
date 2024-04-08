@@ -17,6 +17,18 @@ tree = app_commands.CommandTree(client)
 # guild=discord.Object(id=12417128931)
 
 @tree.command(
+        name="yesorno",
+        description="Says either Yes or No"
+)
+
+async def yesorno(interaction):
+    yesno = randrange(-1,2)
+    if yesno == 1:
+        await interaction.response.send_message("Yes")
+    else:
+        await interaction.response.send_message("No")
+
+@tree.command(
         name="rolladice",
         description="Rolls a Dice"
 )
