@@ -15,6 +15,13 @@ tree = app_commands.CommandTree(client)
 # it will take some time (up to an hour) to register the
 # command if it's for all guilds.
 # guild=discord.Object(id=12417128931)
+@tree.command(
+        name="help",
+        description="Shows all the commands for the Bot"
+)
+
+async def help(interaction):
+    await interaction.response.send_message("List of Commands:\n1. /hello\n2. /rolladice\n3. /yesorno\n4. /help")
 
 @tree.command(
         name="yesorno",
