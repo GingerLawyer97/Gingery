@@ -24,6 +24,23 @@ async def help(interaction):
     await interaction.response.send_message("List of Commands:\n1. /hello\n2. /rolladice\n3. /yesorno\n4. /flipacoin")
 
 @tree.command(
+        name="highlow",
+        description="Guess the Number"
+)
+
+async def highlow(interaction):
+    highlownum = randrange(0,101)
+    print(highlownum)
+    tries = 10
+    await interaction.response.send_message("Guessing a Number...")
+    time.sleep(2)
+    await interaction.followup.send("Try guessing the Number I Guessed. You have 10 tries.")
+    async def on_message(message):
+        if message.content.startswith(highlownum):
+            print("guessed number")
+            await message.channel.send("You Guessed the Number!")
+
+@tree.command(
         name="flipacoin",
         description="Flip's a Coin"
 )
