@@ -87,6 +87,7 @@ async def hello(interaction):
 @client.event
 async def on_ready():
     await tree.sync()
+    await client.change_presence(status=discord.Status.idle, activity=discord.Game('with your mom'))
     print(f'We have logged in as {client.user}')
 
 client.run('MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g')
