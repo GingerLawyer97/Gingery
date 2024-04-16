@@ -3,6 +3,11 @@ import random
 from random import randrange
 import discord
 from discord import app_commands
+from discord.ext import commands
+import json
+import os
+
+os.chdir("C:\\Users\\parmo\\Documents\\GingeryPy")
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
