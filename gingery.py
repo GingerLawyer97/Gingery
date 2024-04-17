@@ -35,7 +35,7 @@ async def on_message(message):
 
     # Yes or No Command
     if message.content.startswith('!yesno'):
-        yesno = int(randrange(-1,2))
+        yesno = random.randint(0,1)
     if yesno == 1:
         await message.channel.send("Yes")
     else:
