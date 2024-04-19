@@ -25,7 +25,7 @@ async def on_message(message):
 
     # Help Command
     if message.content.startswith('!help'):
-        await message.channel.send(">>>>>> **HELP** <<<<<<\n\n*List of Commands:*\n\n> `!coinflip` - Flips a Coin!\n> `!rolladice` - Rolls a Dice!\n> `!yesno` - Says either Yes or No.")
+        await message.channel.send(">>>>>> **HELP** <<<<<<\n\n*List of Commands:*\n\n> `!coinflip` - Flips a Coin!\n> `!rolladice` - Rolls a Dice!")
     
     # Roll a Dice Command    
     if message.content.startswith('!rolladice'):
