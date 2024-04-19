@@ -37,7 +37,7 @@ async def on_message(message):
     # Coin Flip Command
     if message.content.startswith('!coinflip'):
         coinflip = randrange(-1,2)
-        await message.channel.send("FLipping... ")
+        await message.channel.send("Flipping... ")
         time.sleep(2)
         if coinflip == 1:
             await message.channel.send("Heads!")
