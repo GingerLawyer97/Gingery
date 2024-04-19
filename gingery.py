@@ -36,7 +36,7 @@ async def on_message(message):
 
     # Yes or No Command
     if message.content.startswith('!yesno'):
-        yesno = int(randrange(-1,2))
+        yesno = random.randint(0,1)
     if yesno == 1:
         await message.channel.send("Yes")
     else:
@@ -54,4 +54,4 @@ async def coinflip(ctx):
 
     
 
-client.run(os.getenv('TOKEN'))
+client.run('MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g')
