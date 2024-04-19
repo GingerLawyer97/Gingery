@@ -11,7 +11,7 @@ os.chdir("C:\\Users\\parmo\\Documents\\GingeryPy")
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = commands.Bot(command_prefix=['!'])
+client = commands.Bot(command_prefix=['!'], intents=intents)
 
 @client.event
 async def on_ready():
@@ -34,24 +34,16 @@ async def on_message(message):
         time.sleep(1)
         await message.channel.send(radnum)
 
-    # Yes or No Command
-    if message.content.startswith('!yesno'):
-        yesno = random.randint(0,1)
-    if yesno == 1:
-        await message.channel.send("Yes")
-    else:
-        await message.channel.send("No")
-
-@client.command()
-async def coinflip(ctx):
-    coinflip = randrange(-1,2)
-    await message.channel.send("FLipping... s")
-    time.sleep(2)
-    if coinflip == 1:
-        await ctx.send("Heads!")
-    else:
-        await ctx.send("Tails!")
+    # Coin Flip Command
+    if message.content.startswith('!coinflip'):
+        coinflip = randrange(-1,2)
+        await message.channel.send("FLipping... ")
+        time.sleep(2)
+        if coinflip == 1:
+            await message.channel.send("Heads!")
+        else:
+            await message.channel.send("Tails!")
 
     
 
-client.run('MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g')
+client.run("MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g")
