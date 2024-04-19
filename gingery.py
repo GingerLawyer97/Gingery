@@ -1,5 +1,6 @@
 import os
 import discord
+from discord.ext import commands
 import random
 from random import randrange
 import json
@@ -10,7 +11,7 @@ os.chdir("C:\\Users\\parmo\\Documents\\GingeryPy")
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents)
+client = commands.Bot(command_prefix=['!'])
 
 @client.event
 async def on_ready():
@@ -41,19 +42,16 @@ async def on_message(message):
     else:
         await message.channel.send("No")
 
-    # Coin Flip Command
-    if message.content.startswith('!coinflip'):
-        coinflip = randrange(-1,2)
-        await message.channel.send("FLipping... s")
-        time.sleep(2)
-        if coinflip == 1:
-            await message.channel.send("Heads!")
-        else:
-            await message.channel.send("Tails!")
-
-    if message.content.startswith("Hello"):
-        await message.channel.send("Hello!")
+@client.command()
+async def coinflip(ctx):
+    coinflip = randrange(-1,2)
+    await message.channel.send("FLipping... s")
+    time.sleep(2)
+    if coinflip == 1:
+        await ctx.send("Heads!")
+    else:
+        await ctx.send("Tails!")
 
     
 
-client.run('MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g')
+client.run(os.getenv('TOKEN'))
