@@ -5,6 +5,7 @@ import random
 from random import randrange
 import json
 import time
+import asyncio
 
 os.chdir("C:\\Users\\parmo\\Documents\\GingeryPy")
 
@@ -15,8 +16,8 @@ client = commands.Bot(command_prefix=['!'], intents=intents)
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.idle, activity=discord.Game('with your mom'))
-    print(f'{client.user.name} has connected to Discord!')
+    print('GingeryPy has connected to Discord!')
+    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening, name="!help"))
 
 @client.event
 async def on_message(message):
@@ -25,7 +26,9 @@ async def on_message(message):
 
     # Help Command
     if message.content.startswith('!help'):
-        await message.channel.send(">>>>>> **HELP** <<<<<<\n\n*List of Commands:*\n\n> `!coinflip` - Flips a Coin!\n> `!rolladice` - Rolls a Dice!")
+        embedvar = discord.Embed(title=">>>> HELP <<<<", description="List of Commands to use the Bot:")
+        embedvar.add_field(name="`!coinflip`", value="- Flip's a Coin.")
+        embedvar.add_field(name="`!rolladice`", value="- Roll's a Dice.")
     
     # Roll a Dice Command    
     if message.content.startswith('!rolladice'):
@@ -43,7 +46,5 @@ async def on_message(message):
             await message.channel.send("Heads!")
         else:
             await message.channel.send("Tails!")
-
-    
-
+            
 client.run("MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g")
