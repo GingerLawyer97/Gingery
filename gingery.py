@@ -1,13 +1,8 @@
 import os
 import discord
 from discord.ext import commands
-import random
 from random import randrange
-import json
 import time
-import asyncio
-
-os.chdir("C:\\Users\\parmo\\Documents\\GingeryPy")
 
 intents = discord.Intents.default()
 intents.message_content = True
