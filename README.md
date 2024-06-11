@@ -1,11 +1,5 @@
-Git Bash Commands:
+# GingeryPy
 
-git status -#Checks status of files
+GingeryPy is a Minigames Discord Bot developed on Python.
 
-git add --all -#Adds all modified files to be sentto GitHub
-
-git commit -m "Message" -#Commit
-
-git push origin main -#Sends files to GitHub
-
-git pull origin main -#Gets files from GitHub
+Note: This Bot is Under Development.
