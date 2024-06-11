@@ -47,4 +47,4 @@ async def on_message(message):
         else:
             await message.channel.send("Tails!")
             
-client.run("MTIyNjQ2NzAzODExMzgyODg4NA.GL_kq4.Qvb9L5iXPzQC5cvCdGfeDpTQ7cj9EM5xi6eq8g")
+client.run("")
