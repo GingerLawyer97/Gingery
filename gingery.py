@@ -2,7 +2,7 @@ import os
 import discord
 from discord.ext import commands
 import minigames
-from minigames import coinflip, help_cmd, highlow, rolladice, rps, scramble, trivia
+from minigames import about_cmd, coinflip, help_cmd, highlow, rolladice, rps, scramble, trivia
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -19,6 +19,11 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
+
+    # About Command
+    if message.content.startswith('!about'):
+        print("About Command Executed by " + str(message.author))
+        await about_cmd(message.channel)
 
     # Help Command
     if message.content.startswith('!help'):

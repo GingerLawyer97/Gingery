@@ -13,6 +13,14 @@ trivia_questions = [
     {"question": "What is the chemical symbol for water?", "answer": "H2O"}
 ]
 
+# About Command
+async def about_cmd(channel):
+    embedvar = discord.Embed(
+        title="========= About =========",
+        description=("Gingery is a Discord bot that provides various minigames. Developed by GingerLawyer97 in Python. \n\n Type !help to see the list of commands."))
+
+    await channel.send(embed=embedvar)
+
 # Help Command
 async def help_cmd(channel):
     embedvar = discord.Embed(
