@@ -13,7 +13,7 @@ client = commands.Bot(command_prefix=['!'], intents=intents)
 async def on_ready():
     print('Gingery has connected to Discord!')
     
-    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name="!help"))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name="!about"))
 
 @client.event
 async def on_message(message):

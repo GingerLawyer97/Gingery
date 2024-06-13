@@ -1,3 +1,4 @@
+from os import name
 import discord
 from discord.ext import commands
 import random
@@ -16,16 +17,17 @@ trivia_questions = [
 # About Command
 async def about_cmd(channel):
     embedvar = discord.Embed(
-        title="========= About =========",
-        description=("Gingery is a Discord bot that provides various minigames. Developed by GingerLawyer97 in Python. \n\n Type !help to see the list of commands."))
+        title="About Gingery",
+        description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `!help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
 
     await channel.send(embed=embedvar)
 
 # Help Command
 async def help_cmd(channel):
     embedvar = discord.Embed(
-        title="========= HELP =========",
+        title="HELP",
         description="List of Commands to use the Bot:")
+    embedvar.add_field(name="`!about`", value="- Description About the Bot", inline=False)
     embedvar.add_field(name="`!coinflip`", value="- Flip's a Coin.", inline = False)
     embedvar.add_field(name="`!rolladice`", value="- Roll's a Dice.", inline = False)
     embedvar.add_field(name="`!rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
