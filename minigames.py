@@ -11,7 +11,24 @@ trivia_questions = [
     {"question": "What is the largest planet in our solar system?", "answer": "Jupiter"},
     {"question": "Who painted the Mona Lisa?", "answer": "Leonardo da Vinci"},
     {"question": "What is the main ingredient in guacamole?", "answer": "Avocado"},
-    {"question": "What is the chemical symbol for water?", "answer": "H2O"}
+    {"question": "What is the chemical symbol for water?", "answer": "H2O"},
+    {"question": "What is the largest mammal in the world?", "answer": "Blue Whale"},
+    {"question": "What is the largest organ in the human body?", "answer": "Skin"},
+    {"question": "What is the smallest country in the world?", "answer": "Vatican City"},
+    {"question": "What is the largest bird in the world?", "answer": "Ostrich"},
+    {"question": "What is the smallest continent in the world?", "answer": "Australia"},
+    {"question": "What is the largest desert in the world?", "answer": "Sahara Desert"},
+    {"question": "What is the capital of Italy?", "answer": "Rome"},
+    {"question": "What is the highest mountain in the world?", "answer": "Mount Everest"},
+    {"question": "What is the largest ocean in the world?", "answer": "Pacific Ocean"},
+    {"question": "What is the longest river in the world?", "answer": "Nile River"},
+    {"question": "What is the largest lake in the world?", "answer": "Caspian Sea"},
+    {"question": "What is the most populous country in the world?", "answer": "China"},
+    {"question": "What is the hottest continent in the world?", "answer": "Africa"},
+    {"question": "What is the coldest continent in the world?", "answer": "Antarctica"},
+    {"question": "What is the largest island in the world?", "answer": "Greenland"},
+    {"question": "What is the smallest state in the US?", "answer": "Rhode Island"},
+    {"question": "What is the largest state in the US?", "answer": "Alaska"},
 ]
 
 # About Command
