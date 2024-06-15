@@ -35,7 +35,7 @@ trivia_questions = [
 async def about_cmd(channel):
     embedvar = discord.Embed(
         title="About Gingery",
-        description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `!help` to see the list of commands. \n\n Discord Server:  \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
+        description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `!help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
     embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
 
     await channel.send(embed=embedvar)
