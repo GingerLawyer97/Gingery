@@ -124,6 +124,58 @@ eight_ball_responses = [
     "Very doubtful."
 ]
 
+truths = [
+    "What is your biggest fear?",
+    "What is the most embarrassing thing you've done in public?",
+    "Have you ever cheated in a game?",
+    "What is the most daring thing you've ever done?",
+    "Have you ever lied to get out of trouble?",
+    "What is your biggest regret?",
+    "What is a secret you've never told anyone?",
+    "Have you ever stolen something?",
+    "What is the most ridiculous thing you've ever done on a dare?",
+    "What is your biggest insecurity?",
+    "What is the worst thing you've ever said to someone?",
+    "Have you ever faked being sick to skip school or work?",
+    "What is the most awkward date you've ever been on?",
+    "Have you ever had a crush on a friend's partner?",
+    "What is the most expensive thing you've ever broken?",
+    "Have you ever been caught in a lie?",
+    "What is the weirdest thing you've ever eaten?",
+    "Have you ever been in a physical fight?",
+    "What is the most unusual habit you have?",
+    "What is something you're afraid to lose?",
+    "Have you ever let someone else take the blame for something you did?",
+    "What is the most outrageous lie you've ever told?",
+    "Have you ever snooped through someone's phone or belongings?"
+]
+
+dares = [
+    "Do 10 pushups right now!",
+    "Sing the chorus of your favorite song out loud.",
+    "Do your best impression of a famous person.",
+    "Let someone write a word on your forehead in marker.",
+    "Do a silly dance for one minute.",
+    "Speak in a funny voice until your next turn.",
+    "Eat a spoonful of a condiment of your choice.",
+    "Let someone in the group redo your hairstyle.",
+    "Wear socks on your hands for the next 10 minutes.",
+    "Try to lick your elbow.",
+    "Speak in an accent for the next three rounds.",
+    "Post an embarrassing photo of yourself on social media.",
+    "Let the person to your left draw on your face with a pen.",
+    "Do 20 push-ups.",
+    "Wear a funny hat for the rest of the game.",
+    "Text a random contact in your phone and say 'I see you'.",
+    "Eat a raw onion slice.",
+    "Let someone tickle you for 30 seconds.",
+    "Do your best chicken dance outside on the lawn.",
+    "Act like a monkey until your next turn.",
+    "Run around the outside of the house three times.",
+    "Let someone give you a temporary tattoo with a marker.",
+    "Pretend to be the person to your right for the next 10 minutes."
+]
+
 # Text Commands
 @client.event
 async def on_message(message):
@@ -137,7 +189,7 @@ async def on_message(message):
             title="About Gingery",
             description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `!help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.1')
+        embedvar.set_footer(text='Version 0.1.2')
 
         await message.channel.send(embed=embedvar)
 
@@ -155,6 +207,7 @@ async def on_message(message):
         embedvar.add_field(name="`!scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
         embedvar.add_field(name="`!trivia`", value="- The Bot asks you a Question.", inline=False)
         embedvar.add_field(name="`!8ball <question>`", value="- Ask the Bot a question.", inline=False)
+        embedvar.add_field(name="`!td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
 
         await message.channel.send(embed=embedvar)
 
@@ -279,7 +332,25 @@ async def on_message(message):
         else:
             response = random.choice(eight_ball_responses)
             await message.channel.send(f'{response}')
-        
+
+    # Truth or Dare Command
+    if message.content.startswith('!td'):
+        print("TD Command Executed by " + str(message.author))
+        if message.content == '!td':
+            await message.channel.send(f"Invalid Choice! Please choose either truth or dare.\nExample: `!td truth`")
+            return
+        else:
+            choices = ['truth', 'dare']
+            user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
+
+            if user_choice not in choices:
+                await  message.channel.send(f"Invalid Choice! Please choose either truth or dare.\nExample: `!td truth`")
+                return
+            
+            if user_choice == 'truth':
+                await message.channel.send(random.choice(truths))
+            elif user_choice == 'dare':
+                await message.channel.send(random.choice(dares))
         
 # Token
 token = os.environ['TOKEN']
