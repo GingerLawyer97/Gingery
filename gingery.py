@@ -153,7 +153,8 @@ async def on_message(message):
         embedvar.add_field(name="`!rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
         embedvar.add_field(name="`!highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
         embedvar.add_field(name="`!scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
-        embedvar.add_field(name="`!trivia`", value="- Plays a Trivia game with the Bot.", inline=False)
+        embedvar.add_field(name="`!trivia`", value="- The Bot asks you a Question.", inline=False)
+        embedvar.add_field(name="`!8ball <question>`", value="- Ask the Bot a question.", inline=False)
 
         await message.channel.send(embed=embedvar)
 
