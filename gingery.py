@@ -101,6 +101,29 @@ WORDS = ['python', 'discord', 'programming', 'bot', 'server', 'message', 'channe
     'decision', 'decryption', 'deflate', 'definition', 'deferred', 'delegation', 'dependency', 'dereference', 'descriptor', 'design', 
     'deterministic', 'developer', 'diagnostic', 'differential', 'diffusion' ]
 
+eight_ball_responses = [
+    "It is certain.",
+    "It is decidedly so.",
+    "Without a doubt.",
+    "Yes – definitely.",
+    "You may rely on it.",
+    "As I see it, yes.",
+    "Most likely.",
+    "Outlook good.",
+    "Yes.",
+    "Signs point to yes.",
+    "Reply hazy, try again.",
+    "Ask again later.",
+    "Better not tell you now.",
+    "Cannot predict now.",
+    "Concentrate and ask again.",
+    "Don't count on it.",
+    "My reply is no.",
+    "My sources say no.",
+    "Outlook not so good.",
+    "Very doubtful."
+]
+
 # Text Commands
 @client.event
 async def on_message(message):
@@ -114,6 +137,7 @@ async def on_message(message):
             title="About Gingery",
             description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `!help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
+        embedvar.set_footer(text='Version 0.1.1')
 
         await message.channel.send(embed=embedvar)
 
@@ -153,7 +177,7 @@ async def on_message(message):
     if message.content.startswith('!rps'):
         print("RPS Command Executed by " + str(message.author))
         if message.content == '!rps':
-            await message.channel.send(f"Invalid Choice! Please choose either rock, paper, or scissors. \n Example: `!rps rock`")
+            await message.channel.send(f"Invalid Choice! Please choose either rock, paper, or scissors.\nExample: `!rps rock`")
             return
         else:
             choices = ['rock', 'paper', 'scissors']
@@ -244,6 +268,17 @@ async def on_message(message):
                 await message.channel.send('Correct!')
             else:
                 await message.channel.send('Incorrect! The correct answer was: {}'.format(question["answer"]))
+
+    # 8-Ball Command
+    if message.content.startswith('!8ball'):
+        print("8ball Command Executed by " + str(message.author))
+        if message.content == '!8ball':
+            await message.channel.send(f"Please ask a question.\nExample: `!8ball Is Gingery the best?`")
+            return
+        else:
+            response = random.choice(eight_ball_responses)
+            await message.channel.send(f'{response}')
+        
         
 # Token
 token = os.environ['TOKEN']
