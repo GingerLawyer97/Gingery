@@ -75,6 +75,29 @@ trivia_questions = [
     {"question": "What is the longest-running television show in the United States?", "answer": "The Simpsons"}
 ]
 
+riddle_questions = [
+    {"question": "I have keys but open no locks. I have space but no room. You can enter, but you can't go outside. What am I?", "answer": "A keyboard"},
+    {"question": "I can fly without wings. I can cry without eyes. Whenever I go, darkness flies. What am I?", "answer": "A cloud"},
+    {"question": "I am not alive, but I grow. I don't have lungs, but I need air. I don't have a mouth, but water kills me. What am I?", "answer": "Fire"},
+    {"question": "I can be cracked, made, told, and played. What am I?", "answer": "A joke"},
+    {"question": "The more you take, the more you leave behind. What am I?", "answer": "Footsteps"},
+    {"question": "I shave every day, but my beard stays the same. What am I?", "answer": "A barber"},
+    {"question": "I am not alive, but I can grow; I don't have eyes, but I will cry; I don't have wings, but I will fly. What am I?", "answer": "A storm"},
+    {"question": "I go in hard and come out soft. You blow me hard. What am I?", "answer": "Chewing gum"},
+    {"question": "I am always hungry, I must always be fed. The finger I touch will soon turn red. What am I?", "answer": "Fire"},
+    {"question": "I turn once, what is out will not get in. I turn again, what is in will not get out. What am I?", "answer": "A key"},
+    {"question": "I can be long or short; I can be grown or bought; I can be painted or left bare; I can be round or square. What am I?", "answer": "Nails"},
+    {"question": "I have a head, a tail, but no body. What am I?", "answer": "A coin"},
+    {"question": "I can be cracked, made, told, and played. What am I?", "answer": "A joke"},
+    {"question": "I am an odd number. Take away one letter and I become even. What am I?", "answer": "Seven"},
+    {"question": "I am full of holes, but I can hold water. What am I?", "answer": "A sponge"},
+    {"question": "I can travel around the world while staying in a corner. What am I?", "answer": "A stamp"},
+    {"question": "I am light as a feather, yet the strongest man can't hold me for much more than a minute. What am I?", "answer": "Breath"},
+    {"question": "I am not alive, but I can grow; I don't have eyes, but I will cry; I don't have wings, but I will fly. What am I?", "answer": "A storm"},
+    {"question": "I can be cracked, made, told, and played. What am I?", "answer": "A joke"},
+    {"question": "I am taken from a mine, and shut up in a wooden case, from which I am never released, and yet I am used by almost every person. What am I?", "answer": "Pencil lead"}
+]
+
 WORDS = ['python', 'discord', 'programming', 'bot', 'server', 'message', 'channel', 'role', 'algorithm', 'array', 'attribute', 'boolean', 'byte', 'class', 'compiler', 'condition', 'constant', 'constructor', 
     'data', 'database', 'debug', 'default', 'development', 'dictionary', 'document', 'element', 'encryption', 'exception', 
     'expression', 'file', 'framework', 'function', 'hexadecimal', 'index', 'inheritance', 'input', 'integer', 'interface', 
@@ -189,27 +212,45 @@ async def on_message(message):
             title="About Gingery",
             description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.3')
+        embedvar.set_footer(text='Version 0.1.4')
 
         await message.channel.send(embed=embedvar)
 
     # Help Command
     if message.content.startswith('.help'):
         print("Help Command Executed by " + str(message.author))
-        embedvar = discord.Embed(
-            title="HELP",
-            description="List of Commands to use the Bot:")
-        embedvar.add_field(name="`.about`", value="- Description About the Bot", inline=False)
-        embedvar.add_field(name="`.coinflip`", value="- Flip's a Coin.", inline = False)
-        embedvar.add_field(name="`.rolladice`", value="- Roll's a Dice.", inline = False)
-        embedvar.add_field(name="`.rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
-        embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
-        embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
-        embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
-        embedvar.add_field(name="`.8ball <question>`", value="- Ask the Bot a question.", inline=False)
-        embedvar.add_field(name="`.td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
+        if message.content == '.help':
+            await message.channel.send(f"Invalid Choice! Please choose an page number.\nExample: `.help 1`")
+            return
+        else:
+            choices = ['1', '2']
+            user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
 
-        await message.channel.send(embed=embedvar)
+            if user_choice not in choices:
+                await message.channel.send(f'Invalid Choice! Please choose an page number.\nExample: `.help 1`')
+                return
+
+            if user_choice == '1':
+                embedvar = discord.Embed(
+                    title="HELP",
+                    description="List of Commands to use the Bot:")
+                embedvar.add_field(name="`.about`", value="- Description About the Bot", inline=False)
+                embedvar.add_field(name="`.coinflip`", value="- Flip's a Coin.", inline = False)
+                embedvar.add_field(name="`.rolladice`", value="- Roll's a Dice.", inline = False)
+                embedvar.add_field(name="`.rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
+                embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
+                embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
+                embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
+                await message.channel.send(embed=embedvar)
+
+            if user_choice == '2':
+                embedvar2 = discord.Embed(
+                    title="HELP",
+                    description="List of Commands to use the Bot:")
+                embedvar2.add_field(name="`.riddle`", value="- The Bot asks you a Riddle.", inline=False)
+                embedvar2.add_field(name="`.8ball <question>`", value="- Ask the Bot a question.", inline=False)
+                embedvar2.add_field(name="`.td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
+                await message.channel.send(embed=embedvar2)
 
     # Roll a Dice Command
     if message.content.startswith('.rolladice'):
@@ -296,7 +337,7 @@ async def on_message(message):
         try:
             user_guess = await client.wait_for('message', check=scramble_check, timeout=30)
         except asyncio.TimeoutError:
-            await message.channel.send('Time is up! You took too long to answer.')
+            await message.channel.send('Time is up! You took too long to answer. The correct word was: **{word}**.')
             return
 
         if user_guess.content.lower() == word:
@@ -308,6 +349,25 @@ async def on_message(message):
     if message.content.startswith('.trivia'):
         print("Trivia Command Executed by " + str(message.author))
         question = random.choice(trivia_questions)
+        await message.channel.send(question["question"])
+
+        def check(msg):
+            return msg.author == message.author and msg.channel == message.channel
+
+        try:
+            answer = await client.wait_for('message', timeout=30, check=check)
+        except asyncio.TimeoutError:
+            await message.channel.send('Time\'s up! The correct answer was: {}'.format(question["answer"]))
+        else:
+            if answer.content.lower() == question["answer"].lower():
+                await message.channel.send('Correct!')
+            else:
+                await message.channel.send('Incorrect! The correct answer was: {}'.format(question["answer"]))
+
+    # Riddle Command
+    if message.content.startswith('.riddle'):
+        print("Riddle Command Executed by " + str(message.author))
+        question = random.choice(riddle_questions)
         await message.channel.send(question["question"])
 
         def check(msg):
