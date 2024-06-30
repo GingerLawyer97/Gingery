@@ -13,7 +13,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 # Bot Instance
-client = commands.Bot(command_prefix=['!'], intents=intents)
+client = commands.Bot(command_prefix=['.'], intents=intents)
 
 # If the Bot goes Online
 @client.event
@@ -183,43 +183,43 @@ async def on_message(message):
         return
 
     # About Command
-    if message.content.startswith('!about'):
+    if message.content.startswith('.about'):
         print("About Command Executed by " + str(message.author))
         embedvar = discord.Embed(
             title="About Gingery",
-            description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `!help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
+            description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.2')
+        embedvar.set_footer(text='Version 0.1.3')
 
         await message.channel.send(embed=embedvar)
 
     # Help Command
-    if message.content.startswith('!help'):
+    if message.content.startswith('.help'):
         print("Help Command Executed by " + str(message.author))
         embedvar = discord.Embed(
             title="HELP",
             description="List of Commands to use the Bot:")
-        embedvar.add_field(name="`!about`", value="- Description About the Bot", inline=False)
-        embedvar.add_field(name="`!coinflip`", value="- Flip's a Coin.", inline = False)
-        embedvar.add_field(name="`!rolladice`", value="- Roll's a Dice.", inline = False)
-        embedvar.add_field(name="`!rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
-        embedvar.add_field(name="`!highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
-        embedvar.add_field(name="`!scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
-        embedvar.add_field(name="`!trivia`", value="- The Bot asks you a Question.", inline=False)
-        embedvar.add_field(name="`!8ball <question>`", value="- Ask the Bot a question.", inline=False)
-        embedvar.add_field(name="`!td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
+        embedvar.add_field(name="`.about`", value="- Description About the Bot", inline=False)
+        embedvar.add_field(name="`.coinflip`", value="- Flip's a Coin.", inline = False)
+        embedvar.add_field(name="`.rolladice`", value="- Roll's a Dice.", inline = False)
+        embedvar.add_field(name="`.rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
+        embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
+        embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
+        embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
+        embedvar.add_field(name="`.8ball <question>`", value="- Ask the Bot a question.", inline=False)
+        embedvar.add_field(name="`.td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
 
         await message.channel.send(embed=embedvar)
 
     # Roll a Dice Command
-    if message.content.startswith('!rolladice'):
+    if message.content.startswith('.rolladice'):
         print("Rolladice Command Executed by " + str(message.author))
         radnum = randrange(0, 7)
         await message.channel.send("The Number is... ")
         await message.channel.send(radnum)
 
     # Coin Flip Command    
-    if message.content.startswith('!coinflip'):
+    if message.content.startswith('.coinflip'):
         print("Coinflip Command Executed by " + str(message.author))
         coinflip = randrange(-1, 2)
         if coinflip == 1:
@@ -228,17 +228,17 @@ async def on_message(message):
             await message.channel.send("Its a Tail!")
 
     # Rock Paper Scissors Command
-    if message.content.startswith('!rps'):
+    if message.content.startswith('.rps'):
         print("RPS Command Executed by " + str(message.author))
-        if message.content == '!rps':
-            await message.channel.send(f"Invalid Choice! Please choose either rock, paper, or scissors.\nExample: `!rps rock`")
+        if message.content == '.rps':
+            await message.channel.send(f"Invalid Choice! Please choose either rock, paper, or scissors.\nExample: `.rps rock`")
             return
         else:
             choices = ['rock', 'paper', 'scissors']
             user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
 
             if user_choice not in choices:
-                await message.channel.send('Invalid choice! Please choose either rock, paper, or scissors.')
+                await message.channel.send(f'Invalid choice! Please choose either rock, paper, or scissors.\nExample: `.rps rock`')
                 return
 
             bot_choice = random.choice(choices)
@@ -253,7 +253,7 @@ async def on_message(message):
                 await message.channel.send(f'You chose {user_choice} and I chose {bot_choice}. I win!')
         
     # HighLow Command
-    if message.content.startswith('!highlow'):
+    if message.content.startswith('.highlow'):
         print("HighLow Command Executed by " + str(message.author))
         number = random.randint(1, 100) # Generate a random number between 1 and 100
 
@@ -284,7 +284,7 @@ async def on_message(message):
         await message.channel.send('You have used all your attempts. The number was {}.'.format(number))
 
     # Word Scramble Command
-    if message.content.startswith('!scramble'):
+    if message.content.startswith('.scramble'):
         print("Scramble Command Executed by " + str(message.author))
         word = random.choice(WORDS)
         scrambled_word = ''.join(random.sample(word, len(word)))
@@ -305,7 +305,7 @@ async def on_message(message):
             await message.channel.send(f'Sorry {message.author.mention}, the correct word was: **{word}**.')
 
     # Trivia Game Command
-    if message.content.startswith('!trivia'):
+    if message.content.startswith('.trivia'):
         print("Trivia Command Executed by " + str(message.author))
         question = random.choice(trivia_questions)
         await message.channel.send(question["question"])
@@ -324,27 +324,27 @@ async def on_message(message):
                 await message.channel.send('Incorrect! The correct answer was: {}'.format(question["answer"]))
 
     # 8-Ball Command
-    if message.content.startswith('!8ball'):
+    if message.content.startswith('.8ball'):
         print("8ball Command Executed by " + str(message.author))
-        if message.content == '!8ball':
-            await message.channel.send(f"Please ask a question.\nExample: `!8ball Is Gingery the best?`")
+        if message.content == '.8ball':
+            await message.channel.send(f"Please ask a question.\nExample: `.8ball Is Gingery the best?`")
             return
         else:
             response = random.choice(eight_ball_responses)
             await message.channel.send(f'{response}')
 
     # Truth or Dare Command
-    if message.content.startswith('!td'):
+    if message.content.startswith('.td'):
         print("TD Command Executed by " + str(message.author))
-        if message.content == '!td':
-            await message.channel.send(f"Invalid Choice! Please choose either truth or dare.\nExample: `!td truth`")
+        if message.content == '.td':
+            await message.channel.send(f"Invalid Choice! Please choose either truth or dare.\nExample: `.td truth`")
             return
         else:
             choices = ['truth', 'dare']
             user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
 
             if user_choice not in choices:
-                await  message.channel.send(f"Invalid Choice! Please choose either truth or dare.\nExample: `!td truth`")
+                await  message.channel.send(f"Invalid Choice! Please choose either truth or dare.\nExample: `.td truth`")
                 return
             
             if user_choice == 'truth':
