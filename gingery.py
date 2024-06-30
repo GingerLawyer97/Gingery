@@ -3,6 +3,7 @@ from os import name
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.ui import Button, View
 import random
 from random import randrange
 import time
@@ -23,7 +24,7 @@ async def on_ready():
     # Sync Slash Commands
     await client.tree.sync()
     # Status of the Bot
-    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name="!about"))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name=".about"))
 
 trivia_questions = [
     {"question": "What is the capital of France?", "answer": "Paris"},
@@ -199,6 +200,72 @@ dares = [
     "Pretend to be the person to your right for the next 10 minutes."
 ]
 
+facts = [
+"The longest river in the world is the Nile, stretching over 6,650 kilometers (4,130 miles).",
+"The smallest bone in the human body is the stapes bone in the middle ear.",
+"Honey never spoils; archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still edible.",
+"Bananas are berries, but strawberries are not.",
+"Octopuses have three hearts.",
+"A day on Venus is longer than a year on Venus.",
+"Wombat poop is cube-shaped.",
+"The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
+"There are more stars in the universe than grains of sand on all the Earth's beaches.",
+"Humans share approximately 60% of their DNA with bananas.",
+"A bolt of lightning contains enough energy to toast 100,000 slices of bread.",
+"The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes.",
+"Kangaroos can't walk backward.",
+"A group of flamingos is called a 'flamboyance'.",
+"The longest time between two twins being born is 87 days.",
+"There are more public libraries in the U.S. than McDonald's restaurants.",
+"Dolphins have names for each other.",
+"A jiffy is an actual unit of time: 1/100th of a second.",
+"The longest word in the English language is 189,819 letters long and would take you three and a half hours to pronounce.",
+"Cleopatra lived closer in time to the moon landing than to the construction of the Great Pyramid of Giza.",
+"A single cloud can weigh more than a million pounds.",
+"The inventor of the Pringles can is now buried in one.",
+"Cows have best friends and can become stressed when they are separated.",
+"Scotland's national animal is the unicorn.",
+"Butterflies can taste with their feet.",
+"There are more fake flamingos in the world than real ones.",
+"The smell of freshly cut grass is actually a plant distress call.",
+"Humans are the only animals that blush.",
+"There are more possible iterations of a game of chess than there are atoms in the known universe.",
+"The electric chair was invented by a dentist."
+]
+
+jokes = [
+"Why don't scientists trust atoms? Because they make up everything!",
+"Why did the scarecrow win an award? Because he was outstanding in his field!",
+"Why don't skeletons fight each other? They don't have the guts.",
+"What do you call fake spaghetti? An impasta.",
+"Why did the math book look sad? Because it had too many problems.",
+"How does a penguin build its house? Igloos it together.",
+"Why can't you give Elsa a balloon? Because she will let it go.",
+"What do you call a fish with no eyes? Fsh.",
+"Why don't oysters share their pearls? Because they're shellfish.",
+"What do you get when you cross a snowman and a vampire? Frostbite.",
+"Why did the bicycle fall over? Because it was two-tired.",
+"What do you call cheese that isn't yours? Nacho cheese.",
+"Why did the golfer bring two pairs of pants? In case he got a hole in one.",
+"Why don't some couples go to the gym? Because some relationships don't work out.",
+"What do you call a bear with no teeth? A gummy bear.",
+"Why did the coffee file a police report? It got mugged.",
+"How do you catch a squirrel? Climb into a tree and act like a nut.",
+"What did one ocean say to the other ocean? Nothing, they just waved.",
+"Why are ghosts bad at lying? Because they are too transparent.",
+"What do you get when you cross a snowman and a dog? Frostbite.",
+"Why was the math book sad? It had too many problems.",
+"Why did the tomato turn red? Because it saw the salad dressing.",
+"Why did the stadium get hot after the game? All the fans left.",
+"Why don't programmers like nature? It has too many bugs.",
+"What do you get when you cross a vampire with a snowman? Frostbite.",
+"Why did the chicken join a band? Because it had the drumsticks.",
+"Why was the broom late? It swept in.",
+"What do you call a pile of cats? A meowtain.",
+"Why did the scarecrow become a successful neurosurgeon? He was outstanding in his field.",
+"Why don't eggs tell jokes? They might crack up."
+]
+
 # Text Commands
 @client.event
 async def on_message(message):
@@ -210,11 +277,20 @@ async def on_message(message):
         print("About Command Executed by " + str(message.author))
         embedvar = discord.Embed(
             title="About Gingery",
-            description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n Discord Server: https://discord.gg/7sdx7PAtRh \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
+            description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.4')
+        embedvar.set_footer(text='Version 0.1.5')
 
-        await message.channel.send(embed=embedvar)
+        # Create buttons
+        button1 = Button(label="Support Server", url="https://discord.gg/7sdx7PAtRh")
+        button2 = Button(label="Invite Bot", url="https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot")
+
+        # Create a view and add the buttons to it
+        view = View()
+        view.add_item(button1)
+        view.add_item(button2)
+
+        await message.channel.send(embed=embedvar, view=view)
 
     # Help Command
     if message.content.startswith('.help'):
@@ -241,6 +317,7 @@ async def on_message(message):
                 embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
                 embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
                 embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
+                embedvar.set_footer(text="Page 1/2")
                 await message.channel.send(embed=embedvar)
 
             if user_choice == '2':
@@ -250,6 +327,9 @@ async def on_message(message):
                 embedvar2.add_field(name="`.riddle`", value="- The Bot asks you a Riddle.", inline=False)
                 embedvar2.add_field(name="`.8ball <question>`", value="- Ask the Bot a question.", inline=False)
                 embedvar2.add_field(name="`.td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
+                embedvar2.add_field(name="`.fact`", value="- The Bot gives you a random Fact.", inline=False)
+                embedvar2.add_field(name="`.joke`", value="- The Bot tells you a random Joke.", inline=False)
+                embedvar2.set_footer(text="Page 2/2")
                 await message.channel.send(embed=embedvar2)
 
     # Roll a Dice Command
@@ -411,6 +491,18 @@ async def on_message(message):
                 await message.channel.send(random.choice(truths))
             elif user_choice == 'dare':
                 await message.channel.send(random.choice(dares))
+
+    # Fact Command
+    if message.content.startswith('.fact'):
+        print("Fact Command Executed by " + str(message.author))
+        fact = random.choice(facts)
+        await message.channel.send(fact)
+
+    # Jokes Command
+    if message.content.startswith('.joke'):
+        print("Joke Command Executed by " + str(message.author))
+        joke = random.choice(jokes)
+        await message.channel.send(joke)
         
 # Token
 token = os.environ['TOKEN']
