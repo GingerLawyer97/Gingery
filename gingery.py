@@ -266,6 +266,68 @@ jokes = [
 "Why don't eggs tell jokes? They might crack up."
 ]
 
+questions_wyr = [
+    ("Have the ability to fly", "Have the ability to be invisible"),
+    ("Be able to teleport anywhere", "Be able to read minds"),
+    ("Have unlimited money", "Have unlimited time"),
+    ("Live without music", "Live without television"),
+    ("Be feared by all", "Be loved by all"),
+    ("Know the history of every object you touch", "Be able to talk to animals"),
+    ("Be constantly tired", "Be constantly hungry"),
+    ("Never use social media again", "Never watch another movie or TV show"),
+    ("Live in a world without technology", "Live in a world without nature"),
+    ("Be able to control fire", "Be able to control water"),
+    ("Have the power of super strength", "Have the power of super speed"),
+    ("Only be able to whisper", "Only be able to shout"),
+    ("Have a photographic memory", "Be able to forget anything you want"),
+    ("Live on the moon", "Live on Mars"),
+    ("Be able to time travel to the past", "Be able to time travel to the future"),
+    ("Have a personal chef", "Have a personal chauffeur"),
+    ("Always be 10 minutes late", "Always be 20 minutes early"),
+    ("Be able to talk to plants", "Be able to talk to electronic devices"),
+    ("Be famous but always be watched", "Be rich but always be alone"),
+    ("Have a rewind button for your life", "Have a pause button for your life"),
+    ("Be able to speak all languages", "Be able to play all musical instruments"),
+    ("Have the power to heal others", "Have the power to heal yourself"),
+    ("Never eat your favorite food again", "Only eat your favorite food for the rest of your life"),
+    ("Always have bad breath", "Always have body odor"),
+    ("Be able to breathe underwater", "Be able to walk through walls")
+]
+
+quotes = [
+    ("The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt"),
+    ("In the end, we will remember not the words of our enemies, but the silence of our friends. - Martin Luther King Jr."),
+    ("The best way to predict the future is to invent it. - Alan Kay"),
+    ("Life is 10% what happens to us and 90% how we react to it. - Charles R. Swindoll"),
+    ("The purpose of our lives is to be happy. - Dalai Lama"),
+    ("Get busy living or get busy dying. - Stephen King"),
+    ("You only live once, but if you do it right, once is enough. - Mae West"),
+    ("Many of life's failures are people who did not realize how close they were to success when they gave up. - Thomas A. Edison"),
+    ("If you want to live a happy life, tie it to a goal, not to people or things. - Albert Einstein"),
+    ("Never let the fear of striking out keep you from playing the game. - Babe Ruth"),
+    ("Money and success don’t change people; they merely amplify what is already there. - Will Smith"),
+    ("Your time is limited, so don’t waste it living someone else’s life. - Steve Jobs"),
+    ("Not how long, but how well you have lived is the main thing. - Seneca"),
+    ("If life were predictable it would cease to be life, and be without flavor. - Eleanor Roosevelt"),
+    ("The whole secret of a successful life is to find out what is one’s destiny to do, and then do it. - Henry Ford"),
+    ("In order to write about life first you must live it. - Ernest Hemingway"),
+    ("The big lesson in life, baby, is never be scared of anyone or anything. - Frank Sinatra"),
+    ("Sing like no one’s listening, love like you’ve never been hurt, dance like nobody’s watching, and live like it’s heaven on earth. - Mark Twain"),
+    ("Curiosity about life in all of its aspects, I think, is still the secret of great creative people. - Leo Burnett"),
+    ("Life is not a problem to be solved, but a reality to be experienced. - Soren Kierkegaard"),
+    ("The unexamined life is not worth living. - Socrates"),
+    ("Turn your wounds into wisdom. - Oprah Winfrey"),
+    ("The way I see it, if you want the rainbow, you gotta put up with the rain. - Dolly Parton"),
+    ("Do all the good you can, for all the people you can, in all the ways you can, as long as you can. - Hillary Clinton"),
+    ("Don’t settle for what life gives you; make life better and build something. - Ashton Kutcher"),
+    ("Everything negative – pressure, challenges – is all an opportunity for me to rise. - Kobe Bryant"),
+    ("I like criticism. It makes you strong. - LeBron James"),
+    ("You never really learn much from hearing yourself speak. - George Clooney"),
+    ("Life imposes things on you that you can’t control, but you still have the choice of how you’re going to live through this. - Celine Dion"),
+    ("Life is never easy. There is work to be done and obligations to be met – obligations to truth, to justice, and to liberty. - John F. Kennedy"),
+    ("Live for each second without hesitation. - Elton John")
+]
+
 # Text Commands
 @client.event
 async def on_message(message):
@@ -279,7 +341,7 @@ async def on_message(message):
             title="About Gingery",
             description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.5')
+        embedvar.set_footer(text='Version 0.1.6')
 
         # Create buttons
         button1 = Button(label="Support Server", url="https://discord.gg/7sdx7PAtRh")
@@ -329,6 +391,8 @@ async def on_message(message):
                 embedvar2.add_field(name="`.td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
                 embedvar2.add_field(name="`.fact`", value="- The Bot gives you a random Fact.", inline=False)
                 embedvar2.add_field(name="`.joke`", value="- The Bot tells you a random Joke.", inline=False)
+                embedvar2.add_field(name="`.quote`", value="- The Bot gives you a random Quote.", inline=False)
+                embedvar2.add_field(name="`.wyr`", value="- The Bot asks you a Would You Rather Question.", inline=False)
                 embedvar2.set_footer(text="Page 2/2")
                 await message.channel.send(embed=embedvar2)
 
@@ -503,6 +567,33 @@ async def on_message(message):
         print("Joke Command Executed by " + str(message.author))
         joke = random.choice(jokes)
         await message.channel.send(joke)
+
+    # Quote Command
+    if message.content.startswith('.quote'):
+        print("Quote Command Executed by " + str(message.author))
+        # Choose a Random Qoute
+        quote = random.choice(quotes)
+        # Send the Quote
+        await message.channel.send(quote)
+
+    # Would you Rather Command
+    if message.content.startswith('.wyr'):
+        print("Would You Rather Command Executed by " + str(message.author))
+        # Choose a random question
+        question = random.choice(questions_wyr)
+
+        # Create the embed message
+        embedwyr = discord.Embed(title="**Would You Rather**")
+        embedwyr.add_field(name="Option 1", value=question[0], inline=False)
+        embedwyr.add_field(name="Option 2", value=question[1], inline=False)
+        embedwyr.set_footer(text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
+
+        # Send the message
+        message = await message.channel.send(embed=embedwyr)
+
+        # Add reactions for users to choose
+        await message.add_reaction("🅰️")
+        await message.add_reaction("🅱️")
         
 # Token
 token = os.environ['TOKEN']
