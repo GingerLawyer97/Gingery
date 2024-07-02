@@ -683,15 +683,14 @@ async def about(interaction: discord.Interaction):
 # Help Slash Command
 @client.tree.command(name='help', description='List of commands.')
 async def help(interaction: discord.Interaction, page: str):
-    print("Help Command Executed by " + str(message.author))
+    print("Help Command Executed by " + str(interaction.user))
     choices = ['1', '2', '3']
-    user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
 
-    if user_choice not in choices:
+    if page not in choices:
         await interaction.response.send_message(f"Invalid Choice! Please choose an page number.\nExample: `/help 1`")
         return
 
-    if user_choice == '1':
+    if page == '1':
         embedvar = discord.Embed(
             title="HELP",
             description="List of Commands to use the Bot:")
@@ -705,7 +704,7 @@ async def help(interaction: discord.Interaction, page: str):
         embedvar.set_footer(text="Page 1/3")
         await interaction.response.send_message(embed=embedvar)
 
-    if user_choice == '2':
+    if page == '2':
         embedvar2 = discord.Embed(
             title="HELP",
             description="List of Commands to use the Bot:")
@@ -719,7 +718,7 @@ async def help(interaction: discord.Interaction, page: str):
         embedvar2.set_footer(text="Page 2/3")
         await interaction.response.send_message(embed=embedvar2)
 
-    if user_choice == '3':
+    if page == '3':
         embedvar3 = discord.Embed(
             title="HELP",
             description="List of Commands to use the Bot:"
