@@ -657,7 +657,7 @@ async def on_message(message):
         await message.add_reaction("1️⃣")
         await message.add_reaction("2️⃣")
 
-@client.tree.command(name='about', description='Description about the commands.bot')
+@client.tree.command(name='about', description='Description about the bot')
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
     embedvar = discord.Embed(
