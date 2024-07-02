@@ -24,7 +24,7 @@ async def on_ready():
     # Sync Slash Commands
     await client.tree.sync()
     # Status of the Bot
-    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name=".about"))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name=".about | /about"))
 
 trivia_questions = [
     {"question": "What is the capital of France?", "answer": "Paris"},
@@ -328,6 +328,39 @@ quotes = [
     ("Live for each second without hesitation. - Elton John")
 ]
 
+questions_tort = [
+    ("Cats or Dogs?"),
+    ("Tea or Coffee?"),
+    ("Summer or Winter?"),
+    ("Pizza or Burger?"),
+    ("Movies or Books?"),
+    ("Morning or Night?"),
+    ("Beach or Mountains?"),
+    ("Sweet or Savory?"),
+    ("Facebook or Twitter?"),
+    ("Android or iOS?"),
+    ("Rain or Snow?"),
+    ("Chocolate or Vanilla?"),
+    ("Call or Text?"),
+    ("Comedy or Drama?"),
+    ("Singing or Dancing?"),
+    ("Hamburgers or Hotdogs?"),
+    ("Netflix or YouTube?"),
+    ("Pen or Pencil?"),
+    ("Board Games or Video Games?"),
+    ("Camping or Hotel?"),
+    ("Flying or Driving?"),
+    ("Superman or Batman?"),
+    ("Sunrise or Sunset?"),
+    ("Spicy or Mild?"),
+    ("Fruits or Vegetables?"),
+    ("Shopping Online or In-Store?"),
+    ("Cardio or Weightlifting?"),
+    ("Money or Fame?"),
+    ("Dinosaurs or Dragons?"),
+    ("Robots or Aliens?"),
+]
+
 # Text Commands
 @client.event
 async def on_message(message):
@@ -341,7 +374,7 @@ async def on_message(message):
             title="About Gingery",
             description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.6')
+        embedvar.set_footer(text='Version 0.1.7')
 
         # Create buttons
         button1 = Button(label="Support Server", url="https://discord.gg/7sdx7PAtRh")
@@ -358,14 +391,24 @@ async def on_message(message):
     if message.content.startswith('.help'):
         print("Help Command Executed by " + str(message.author))
         if message.content == '.help':
-            await message.channel.send(f"Invalid Choice! Please choose an page number.\nExample: `.help 1`")
-            return
+            embedvar = discord.Embed(
+                title="HELP",
+                description="List of Commands to use the Bot:")
+            embedvar.add_field(name="`.about`", value="- Description About the Bot", inline=False)
+            embedvar.add_field(name="`.coinflip` OR `.cf`", value="- Flip's a Coin.", inline = False)
+            embedvar.add_field(name="`.rolladice` OR `.rad`", value="- Roll's a Dice.", inline = False)
+            embedvar.add_field(name="`.rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
+            embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
+            embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
+            embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
+            embedvar.set_footer(text="Page 1/3")
+            await message.channel.send(embed=embedvar)
         else:
-            choices = ['1', '2']
+            choices = ['1', '2', '3']
             user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
 
             if user_choice not in choices:
-                await message.channel.send(f'Invalid Choice! Please choose an page number.\nExample: `.help 1`')
+                await message.channel.send(f"Invalid Choice! Please choose an page number.\nExample: `.help 1`")
                 return
 
             if user_choice == '1':
@@ -379,7 +422,7 @@ async def on_message(message):
                 embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
                 embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
                 embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
-                embedvar.set_footer(text="Page 1/2")
+                embedvar.set_footer(text="Page 1/3")
                 await message.channel.send(embed=embedvar)
 
             if user_choice == '2':
@@ -393,8 +436,17 @@ async def on_message(message):
                 embedvar2.add_field(name="`.joke`", value="- The Bot tells you a random Joke.", inline=False)
                 embedvar2.add_field(name="`.quote`", value="- The Bot gives you a random Quote.", inline=False)
                 embedvar2.add_field(name="`.wyr`", value="- The Bot asks you a Would You Rather Question.", inline=False)
-                embedvar2.set_footer(text="Page 2/2")
+                embedvar2.set_footer(text="Page 2/3")
                 await message.channel.send(embed=embedvar2)
+
+            if user_choice == '3':
+                embedvar3 = discord.Embed(
+                    title="HELP",
+                    description="List of Commands to use the Bot:"
+                )
+                embedvar3.add_field(name="`.tort`", value="- The Bot asks you a This or That Question.", inline=False)
+                embedvar3.set_footer(text="Page 3/3")
+                await message.channel.send(embed=embedvar3)
 
     # Roll a Dice Command
     if message.content.startswith('.rolladice'):
@@ -594,6 +646,37 @@ async def on_message(message):
         # Add reactions for users to choose
         await message.add_reaction("🅰️")
         await message.add_reaction("🅱️")
+
+    # This or That Command
+    if message.content.startswith('.tort'):
+        question = random.choice(questions_tort)
+        embed = discord.Embed(title="This or That", description=question[0])
+        message = await message.channel.send(embed=embed)
+
+        # Adding reactions for choices
+        await message.add_reaction("1️⃣")
+        await message.add_reaction("2️⃣")
+
+@client.tree.command(name='about', description='Description about the commands.bot')
+async def about(interaction: discord.Interaction):
+    print("About Command Executed by " + str(interaction.user))
+    embedvar = discord.Embed(
+        title="About Gingery",
+        description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
+    embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
+    embedvar.set_footer(text='Version 0.1.7')
+
+    # Create buttons
+    button1 = Button(label="Support Server", url="https://discord.gg/7sdx7PAtRh")
+    button2 = Button(label="Invite Bot", url="https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot")
+
+    # Create a view and add the buttons to it
+    view = View()
+    view.add_item(button1)
+    view.add_item(button2)
+
+    await interaction.response.send_message(embed=embedvar, view=view)
+    await interaction.followup.send("`We are currently working on Slash Commands, and they will be added soon!`", ephemeral=True)
         
 # Token
 token = os.environ['TOKEN']
