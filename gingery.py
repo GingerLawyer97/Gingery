@@ -1,13 +1,15 @@
 import os
 from os import name
 import discord
-from discord import app_commands
+from discord import app_commands, message
 from discord.ext import commands
 from discord.ui import Button, View
 import random
 from random import randrange
 import time
 import asyncio
+
+from discord.webhook.async_ import interaction_message_response_params
 
 # Intents of the Bot
 intents = discord.Intents.default()
@@ -233,7 +235,7 @@ facts = [
 "The electric chair was invented by a dentist."
 ]
 
-jokes = [
+joke_ = [
 "Why don't scientists trust atoms? Because they make up everything!",
 "Why did the scarecrow win an award? Because he was outstanding in his field!",
 "Why don't skeletons fight each other? They don't have the guts.",
@@ -374,7 +376,7 @@ async def on_message(message):
             title="About Gingery",
             description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
         embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.1.7')
+        embedvar.set_footer(text='Version 0.2.0')
 
         # Create buttons
         button1 = Button(label="Support Server", url="https://discord.gg/7sdx7PAtRh")
@@ -617,7 +619,7 @@ async def on_message(message):
     # Jokes Command
     if message.content.startswith('.joke'):
         print("Joke Command Executed by " + str(message.author))
-        joke = random.choice(jokes)
+        joke = random.choice(joke_)
         await message.channel.send(joke)
 
     # Quote Command
@@ -650,21 +652,22 @@ async def on_message(message):
     # This or That Command
     if message.content.startswith('.tort'):
         question = random.choice(questions_tort)
-        embed = discord.Embed(title="This or That", description=question[0])
+        embed = discord.Embed(title="This or That", description=question)
         message = await message.channel.send(embed=embed)
 
         # Adding reactions for choices
         await message.add_reaction("1️⃣")
         await message.add_reaction("2️⃣")
 
-@client.tree.command(name='about', description='Description about the bot')
+# About Slash Command
+@client.tree.command(name='about', description='Description about the bot.')
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
     embedvar = discord.Embed(
         title="About Gingery",
         description=("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."))
     embedvar.set_thumbnail(url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-    embedvar.set_footer(text='Version 0.1.7')
+    embedvar.set_footer(text='Version 0.2.0')
 
     # Create buttons
     button1 = Button(label="Support Server", url="https://discord.gg/7sdx7PAtRh")
@@ -676,7 +679,263 @@ async def about(interaction: discord.Interaction):
     view.add_item(button2)
 
     await interaction.response.send_message(embed=embedvar, view=view)
-    await interaction.followup.send("`We are currently working on Slash Commands, and they will be added soon!`", ephemeral=True)
+
+# Help Slash Command
+@client.tree.command(name='help', description='List of commands.')
+async def help(interaction: discord.Interaction, page: str):
+    print("Help Command Executed by " + str(message.author))
+    choices = ['1', '2', '3']
+    user_choice = message.content.split(' ')[1].lower()  # Extract user's choice
+
+    if user_choice not in choices:
+        await interaction.response.send_message(f"Invalid Choice! Please choose an page number.\nExample: `/help 1`")
+        return
+
+    if user_choice == '1':
+        embedvar = discord.Embed(
+            title="HELP",
+            description="List of Commands to use the Bot:")
+        embedvar.add_field(name="`.about`", value="- Description About the Bot", inline=False)
+        embedvar.add_field(name="`.coinflip`", value="- Flip's a Coin.", inline = False)
+        embedvar.add_field(name="`.rolladice`", value="- Roll's a Dice.", inline = False)
+        embedvar.add_field(name="`.rps <rock/paper/scissors>`", value="- Plays Rock, Paper, Scissors with the Bot.", inline=False)
+        embedvar.add_field(name="`.highlow`", value="- Plays a Number Guessing game with the Bot.", inline=False)
+        embedvar.add_field(name="`.scramble`", value="- Plays a Word Scramble game with the Bot.", inline=False)
+        embedvar.add_field(name="`.trivia`", value="- The Bot asks you a Question.", inline=False)
+        embedvar.set_footer(text="Page 1/3")
+        await interaction.response.send_message(embed=embedvar)
+
+    if user_choice == '2':
+        embedvar2 = discord.Embed(
+            title="HELP",
+            description="List of Commands to use the Bot:")
+        embedvar2.add_field(name="`.riddle`", value="- The Bot asks you a Riddle.", inline=False)
+        embedvar2.add_field(name="`.8ball <question>`", value="- Ask the Bot a question.", inline=False)
+        embedvar2.add_field(name="`.td <truth/dare>`", value="- The Bot asks you a Truth or Dare.", inline=False)
+        embedvar2.add_field(name="`.fact`", value="- The Bot gives you a random Fact.", inline=False)
+        embedvar2.add_field(name="`.joke`", value="- The Bot tells you a random Joke.", inline=False)
+        embedvar2.add_field(name="`.quote`", value="- The Bot gives you a random Quote.", inline=False)
+        embedvar2.add_field(name="`.wyr`", value="- The Bot asks you a Would You Rather Question.", inline=False)
+        embedvar2.set_footer(text="Page 2/3")
+        await interaction.response.send_message(embed=embedvar2)
+
+    if user_choice == '3':
+        embedvar3 = discord.Embed(
+            title="HELP",
+            description="List of Commands to use the Bot:"
+        )
+        embedvar3.add_field(name="`.tort`", value="- The Bot asks you a This or That Question.", inline=False)
+        embedvar3.set_footer(text="Page 3/3")
+        await interaction.response.send_message(embed=embedvar3)
+
+# Roll a Dice Slash Command
+@client.tree.command(name='rolladice', description='Roll a dice.')
+async def rolladice(interaction: discord.Interaction):
+    print("Rolladice Command Executed by " + str(interaction.user))
+    radnum = randrange(0, 7)
+    await interaction.response.send_message(f"The Number is... {radnum}.")
+
+# Coin Flip Slash Command
+@client.tree.command(name='coinflip', description='Flips a Coin.')
+async def coinflip(interaction: discord.Interaction):
+    print("Coinflip Command Executed by " + str(interaction.user))
+    coinflip = randrange(-1, 2)
+    if coinflip == 1:
+        await interaction.response.send_message("Its a Head!")
+    else:
+        await interaction.response.send_message("Its a Tail!")
+
+# Rock Paper Scissors Slash Command
+@client.tree.command(name='rps', description='Play Rock Paper Scissors with the Bot.')
+async def rps(interaction: discord.Interaction, choice: str):
+    print("RPS Command Executed by " + str(interaction.user))
+    choices = ['rock', 'paper', 'scissors']
+
+    if choice not in choices:
+        await interaction.response.send_message(f'Invalid choice! Please choose either rock, paper, or scissors.\nExample: `/rps rock`')
+        return
+
+    bot_choice = random.choice(choices)
+
+    if choice == bot_choice:
+        await interaction.response.send_message(f'Both chose {choice}. It\'s a tie!')
+    elif (choice == 'rock' and bot_choice == 'scissors') or \
+        (choice == 'paper' and bot_choice == 'rock') or \
+        (choice == 'scissors' and bot_choice == 'paper'):
+        await interaction.response.send_message(f'You chose {choice} and I chose {bot_choice}. You win!')
+    else:
+        await interaction.response.send_message(f'You chose {choice} and I chose {bot_choice}. I win!')
+
+# High Low Slash Command
+@client.tree.command(name='highlow', description='Play High Low with the Bot.')
+async def highlow(interaction: discord.Interaction):
+    print("HighLow Command Executed by " + str(interaction.user))
+    number = random.randint(1, 100) # Generate a random number between 1 and 100
+
+    await interaction.response.send_message('I have chosen a number between 1 and 100. Try to guess it! You have 7 attempts.')
+
+    def highlow_check(msg):
+        return msg.author == interaction.user and msg.channel == interaction.channel
+
+    # Allow the user to guess the number within 7 attempts
+    for _ in range(7):
+        try:
+            guess = await client.wait_for('message', check=highlow_check, timeout=30)
+            guess = int(guess.content)
+
+            if guess < number:
+                await interaction.followup.send('Too low! Try again.')
+            elif guess > number:
+                await interaction.followup.send('Too high! Try again.')
+            elif guess == number:
+                await interaction.followup.send(f'Congratulations {interaction.user}! You guessed it right!')
+                return
+        except ValueError:
+            await interaction.followup.send('Invalid input! Please enter a number.')
+        except asyncio.TimeoutError:
+            await interaction.followup.send('Time\'s up! You didn\'t guess the number in time. The number was {}.'.format(number))
+            return
+
+    await interaction.followup.send('You have used all your attempts. The number was {}.'.format(number))
+
+# Word Scramble Slash Command
+@client.tree.command(name='scramble', description='The Bot gives you a Word to Unscramble.')
+async def scramble(interaction: discord.Interaction):
+    print("Scramble Command Executed by " + str(interaction.user))
+    word = random.choice(WORDS)
+    scrambled_word = ''.join(random.sample(word, len(word)))
+    await interaction.response.send_message(f'Unscramble this word: **{scrambled_word}**')
+
+    def scramble_check(m):
+        return m.author == interaction.user and m.channel == interaction.channel
+
+    try:
+        user_guess = await client.wait_for('message', check=scramble_check, timeout=30)
+    except asyncio.TimeoutError:
+        await interaction.followup.send(f'Time is up {interaction.user.mention}! You took too long to answer. The correct word was: **{word}**.')
+        return
+
+    if user_guess.content.lower() == word:
+        await interaction.followup.send(f'Congratulations {interaction.user.mention}! You guessed the word correctly.')
+    else:
+        await interaction.followup.send(f'Sorry {interaction.user.mention}, the correct word was: **{word}**.')
+
+# Trivia Slash Command
+@client.tree.command(name='trivia', description='The Bots asks you a question')
+async def trivia(interaction: discord.Interaction):
+    print("Trivia Command Executed by " + str(interaction.user))
+    question = random.choice(trivia_questions)
+    await interaction.response.send_message(question["question"])
+
+    def check(msg):
+        return msg.author == interaction.user and msg.channel == interaction.channel
+
+    try:
+        answer = await client.wait_for('message', timeout=30, check=check)
+    except asyncio.TimeoutError:
+        await interaction.followup.send('Time\'s up! The correct answer was: {}'.format(question["answer"]))
+    else:
+        if answer.content.lower() == question["answer"].lower():
+            await interaction.followup.send('Correct!')
+        else:
+            await interaction.followup.send('Incorrect! The correct answer was: {}'.format(question["answer"]))
+
+# Riddle Slash Command
+@client.tree.command(name='riddle', description='The Bot asks you a Riddle.')
+async def riddle(interaction: discord.Interaction):
+    print("Riddle Command Executed by " + str(interaction.user))
+    question = random.choice(riddle_questions)
+    await interaction.response.send_message(question["question"])
+
+    def check(msg):
+        return msg.author == interaction.user and msg.channel == interaction.channel
+
+    try:
+        answer = await client.wait_for('message', timeout=30, check=check)
+    except asyncio.TimeoutError:
+        await interaction.followup.send('Time\'s up! The correct answer was: {}'.format(question["answer"]))
+    else:
+        if answer.content.lower() == question["answer"].lower():
+            await interaction.followup.send('Correct!')
+        else:
+            await interaction.followup.send('Incorrect! The correct answer was: {}'.format(question["answer"]))
+
+# 8Ball Slash Command
+@client.tree.command(name='8ball', description='Ask the Bot a Question.')
+async def ball(interaction: discord.Interaction, question: str):
+    print("8ball Command Executed by " + str(interaction.user))
+    response = random.choice(eight_ball_responses)
+    await interaction.response.send_message(f'Question: {question}\nAnswer: {response}')
+
+# Truth or Dare Slash Command
+@client.tree.command(name='truthordare' , description='The Bot gives you a Truth or a Dare.')
+async def truthordare(interaction: discord.Interaction, choice: str):
+    print("TD Command Executed by " + str(interaction.user))
+    choices = ['truth', 'dare']
+
+    if choice not in choices:
+        await  interaction.response.send_message(f"Invalid Choice! Please choose either truth or dare.\nExample: `/td truth`")
+        return
+
+    if choice == 'truth':
+        await interaction.response.send_message(random.choice(truths))
+    elif choice == 'dare':
+        await interaction.response.send_message(random.choice(dares))
+
+# Fact Slash Command
+@client.tree.command(name='fact', description='The Bot tells you a Fact.')
+async def fact(interaction: discord.Interaction):
+    print("Fact Command Executed by " + str(interaction.user))
+    fact = random.choice(facts)
+    await interaction.response.send_message(fact)
+
+# Joke Slash Command
+@client.tree.command(name='joke', description='The Bot tells you a Joke.')
+async def jokes(interaction: discord.Interaction):
+    print("Joke Command Executed by " + str(interaction.user))
+    joke = random.choice(joke_)
+    await interaction.response.send_message(joke)
+
+# Quote Slash Command
+@client.tree.command(name='quote', description='The Bot tells you a Quote.')
+async def quote(interaction: discord.Interaction):
+    print("Quote Command Executed by " + str(interaction.user))
+    # Choose a Random Qoute
+    quote = random.choice(quotes)
+    # Send the Quote
+    await interaction.response.send_message(quote)
+
+# Would you Rather Slash Command
+@client.tree.command(name='wouldyourather', description='The Bot asks you a Would You Rather Question.')
+async def wyr(interaction: discord.Interaction):
+    print("Would You Rather Command Executed by " + str(interaction.user))
+    # Choose a random question
+    question = random.choice(questions_wyr)
+
+    # Create the embed message
+    embedwyr = discord.Embed(title="**Would You Rather**")
+    embedwyr.add_field(name="Option 1", value=question[0], inline=False)
+    embedwyr.add_field(name="Option 2", value=question[1], inline=False)
+    embedwyr.set_footer(text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
+
+    # Send the message and capture the sent message object
+    message = await interaction.response.send_message(embed=embedwyr)
+
+    # Add reactions to the message
+    await message.add_reaction("🅰️")
+    await message.add_reaction("🅱️")
+
+# This or That Slash Command
+@client.tree.command(name='thisorthat', description='The Bot asks you a This or That Question.')
+async def tort(interaction: discord.Interaction):
+    question = random.choice(questions_tort)
+    embed = discord.Embed(title="This or That", description=question[0])
+    
+    message = await interaction.response.send_message(embed=embed)
+
+    # Adding reactions for choices
+    await message.add_reaction("1️⃣")
+    await message.add_reaction("2️⃣")
         
 # Token
 token = os.environ['TOKEN']
