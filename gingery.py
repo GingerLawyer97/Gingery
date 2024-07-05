@@ -1,3 +1,5 @@
+# ------------------------ LIBRARIES ------------------------ #
+
 import os
 from os import name
 import discord
@@ -9,7 +11,7 @@ from random import randrange
 import time
 import asyncio
 
-from discord.webhook.async_ import interaction_message_response_params
+# ------------------------ SETUP ------------------------ #
 
 # Intents of the Bot
 intents = discord.Intents.default()
@@ -18,7 +20,8 @@ intents.message_content = True
 # Bot Instance
 client = commands.Bot(command_prefix=['.'], intents=intents)
 
-# If the Bot goes Online
+# ------------------------ STARTUP ------------------------ #
+
 @client.event
 async def on_ready():
     
@@ -27,6 +30,8 @@ async def on_ready():
     await client.tree.sync()
     # Status of the Bot
     await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.listening,name=".about | /about"))
+
+# ------------------------ LISTS ------------------------ #
 
 trivia_questions = [
     {"question": "What is the capital of France?", "answer": "Paris"},
@@ -363,7 +368,8 @@ questions_tort = [
     ("Robots or Aliens?"),
 ]
 
-# Text Commands
+# ------------------------ TEXT COMMANDS ------------------------ #
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -659,6 +665,8 @@ async def on_message(message):
         await message.add_reaction("1️⃣")
         await message.add_reaction("2️⃣")
 
+# ------------------------ SLASH COMMANDS ------------------------ #
+
 # About Slash Command
 @client.tree.command(name='about', description='Description about the bot.')
 async def about(interaction: discord.Interaction):
@@ -935,7 +943,8 @@ async def tort(interaction: discord.Interaction):
     # Adding reactions for choices
     await message.add_reaction("1️⃣")
     await message.add_reaction("2️⃣")
-        
-# Token
+
+# ------------------------ TOKEN ------------------------ #
+
 token = os.environ['TOKEN']
 client.run(token)
