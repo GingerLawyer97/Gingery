@@ -959,7 +959,9 @@ async def on_message(message):
 
 
 # About Slash Command
-@client.tree.command(name='about', description='Description about the bot.')
+@client.tree.command(
+    name='about', 
+    description='Description about the bot.')
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
     embedvar = discord.Embed(
@@ -989,7 +991,9 @@ async def about(interaction: discord.Interaction):
 
 
 # Help Slash Command
-@client.tree.command(name='help', description='List of commands.')
+@client.tree.command(
+    name='help', 
+    description='List of commands.')
 async def help(interaction: discord.Interaction, page: str):
     print("Help Command Executed by " + str(interaction.user))
     choices = ['1', '2', '3']
@@ -1068,7 +1072,9 @@ async def help(interaction: discord.Interaction, page: str):
 
 
 # Roll a Dice Slash Command
-@client.tree.command(name='rolladice', description='Roll a dice.')
+@client.tree.command(
+    name='rolladice', 
+    description='Roll a dice.')
 async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
     radnum = randrange(0, 7)
@@ -1076,7 +1082,9 @@ async def rolladice(interaction: discord.Interaction):
 
 
 # Coin Flip Slash Command
-@client.tree.command(name='coinflip', description='Flips a Coin.')
+@client.tree.command(
+    name='coinflip', 
+    description='Flips a Coin.')
 async def coinflip(interaction: discord.Interaction):
     print("Coinflip Command Executed by " + str(interaction.user))
     coinflip = randrange(-1, 2)
@@ -1087,8 +1095,9 @@ async def coinflip(interaction: discord.Interaction):
 
 
 # Rock Paper Scissors Slash Command
-@client.tree.command(name='rps',
-                     description='Play Rock Paper Scissors with the Bot.')
+@client.tree.command(
+    name='rps', 
+    description='Play Rock Paper Scissors with the Bot.')
 async def rps(interaction: discord.Interaction, choice: str):
     print("RPS Command Executed by " + str(interaction.user))
     choices = ['rock', 'paper', 'scissors']
@@ -1115,7 +1124,9 @@ async def rps(interaction: discord.Interaction, choice: str):
 
 
 # High Low Slash Command
-@client.tree.command(name='highlow', description='Play High Low with the Bot.')
+@client.tree.command(
+    name='highlow', 
+    description='Play High Low with the Bot.')
 async def highlow(interaction: discord.Interaction):
     print("HighLow Command Executed by " + str(interaction.user))
     number = random.randint(1,
@@ -1159,8 +1170,9 @@ async def highlow(interaction: discord.Interaction):
 
 
 # Word Scramble Slash Command
-@client.tree.command(name='scramble',
-                     description='The Bot gives you a Word to Unscramble.')
+@client.tree.command(
+    name='scramble', 
+    description='The Bot gives you a Word to Unscramble.')
 async def scramble(interaction: discord.Interaction):
     print("Scramble Command Executed by " + str(interaction.user))
     word = random.choice(WORDS)
@@ -1192,7 +1204,9 @@ async def scramble(interaction: discord.Interaction):
 
 
 # Trivia Slash Command
-@client.tree.command(name='trivia', description='The Bots asks you a question')
+@client.tree.command(
+    name='trivia', 
+    description='The Bots asks you a question')
 async def trivia(interaction: discord.Interaction):
     print("Trivia Command Executed by " + str(interaction.user))
     question = random.choice(trivia_questions)
@@ -1217,7 +1231,9 @@ async def trivia(interaction: discord.Interaction):
 
 
 # Riddle Slash Command
-@client.tree.command(name='riddle', description='The Bot asks you a Riddle.')
+@client.tree.command(
+    name='riddle', 
+    description='The Bot asks you a Riddle.')
 async def riddle(interaction: discord.Interaction):
     print("Riddle Command Executed by " + str(interaction.user))
     question = random.choice(riddle_questions)
@@ -1242,7 +1258,9 @@ async def riddle(interaction: discord.Interaction):
 
 
 # 8Ball Slash Command
-@client.tree.command(name='8ball', description='Ask the Bot a Question.')
+@client.tree.command(
+    name='8ball', 
+    description='Ask the Bot a Question.')
 async def ball(interaction: discord.Interaction, question: str):
     print("8ball Command Executed by " + str(interaction.user))
     response = random.choice(eight_ball_responses)
@@ -1251,8 +1269,9 @@ async def ball(interaction: discord.Interaction, question: str):
 
 
 # Truth or Dare Slash Command
-@client.tree.command(name='truthordare',
-                     description='The Bot gives you a Truth or a Dare.')
+@client.tree.command(
+    name='truthordare', 
+    description='The Bot gives you a Truth or a Dare.')
 async def truthordare(interaction: discord.Interaction, choice: str):
     print("TD Command Executed by " + str(interaction.user))
     choices = ['truth', 'dare']
@@ -1270,7 +1289,9 @@ async def truthordare(interaction: discord.Interaction, choice: str):
 
 
 # Fact Slash Command
-@client.tree.command(name='fact', description='The Bot tells you a Fact.')
+@client.tree.command(
+    name='fact', 
+    description='The Bot tells you a Fact.')
 async def fact(interaction: discord.Interaction):
     print("Fact Command Executed by " + str(interaction.user))
     fact = random.choice(facts)
@@ -1278,7 +1299,9 @@ async def fact(interaction: discord.Interaction):
 
 
 # Joke Slash Command
-@client.tree.command(name='joke', description='The Bot tells you a Joke.')
+@client.tree.command(
+    name='joke', 
+    description='The Bot tells you a Joke.')
 async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
     joke = random.choice(joke_)
@@ -1286,7 +1309,9 @@ async def jokes(interaction: discord.Interaction):
 
 
 # Quote Slash Command
-@client.tree.command(name='quote', description='The Bot tells you a Quote.')
+@client.tree.command(
+    name='quote', 
+    description='The Bot tells you a Quote.')
 async def quote(interaction: discord.Interaction):
     print("Quote Command Executed by " + str(interaction.user))
     # Choose a Random Qoute
@@ -1319,8 +1344,9 @@ async def wyr(interaction: discord.Interaction):
 
 
 # This or That Slash Command
-@client.tree.command(name='thisorthat',
-                     description='The Bot asks you a This or That Question.')
+@client.tree.command(
+    name='thisorthat', 
+    description='The Bot asks you a This or That Question.')
 async def tort(interaction: discord.Interaction):
     question = random.choice(questions_tort)
     embed = discord.Embed(title="This or That", description=question[0])
