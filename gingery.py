@@ -22,7 +22,6 @@ client = commands.Bot(command_prefix=['.'], intents=intents)
 
 # ------------------------ STARTUP ------------------------ #
 
-
 @client.event
 async def on_ready():
 
@@ -34,7 +33,6 @@ async def on_ready():
                                  activity=discord.Activity(
                                      type=discord.ActivityType.listening,
                                      name=".about | /about"))
-
 
 # ------------------------ LISTS ------------------------ #
 
@@ -548,7 +546,6 @@ questions_tort = [
 
 # ------------------------ TEXT COMMANDS ------------------------ #
 
-
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -956,7 +953,6 @@ async def on_message(message):
 
 
 # ------------------------ SLASH COMMANDS ------------------------ #
-
 
 # About Slash Command
 @client.tree.command(
