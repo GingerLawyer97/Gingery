@@ -16,6 +16,7 @@ import asyncio
 # Intents of the Bot
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 # Bot Instance
 client = commands.Bot(command_prefix=['.'], intents=intents)
@@ -26,13 +27,17 @@ client = commands.Bot(command_prefix=['.'], intents=intents)
 async def on_ready():
 
     print('Gingery has connected to Discord!')
+    status = True
     # Sync Slash Commands
     await client.tree.sync()
+
+    total_members = 0
+    
+    for guild in client.guilds:
+        total_members += len(guild.members)
     # Status of the Bot
-    await client.change_presence(status=discord.Status.idle,
-                                 activity=discord.Activity(
-                                     type=discord.ActivityType.listening,
-                                     name=".about | /about"))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help & {total_members} People"))
+
 
 # ------------------------ LISTS ------------------------ #
 
@@ -931,8 +936,7 @@ async def on_message(message):
         embedwyr = discord.Embed(title="**Would You Rather**")
         embedwyr.add_field(name="Option 1", value=question[0], inline=False)
         embedwyr.add_field(name="Option 2", value=question[1], inline=False)
-        embedwyr.set_footer(
-            text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
+        embedwyr.set_footer(text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
 
         # Send the message
         message = await message.channel.send(embed=embedwyr)
@@ -1352,7 +1356,6 @@ async def tort(interaction: discord.Interaction):
     # Adding reactions for choices
     await message.add_reaction("1️⃣")
     await message.add_reaction("2️⃣")
-
 
 # ------------------------ TOKEN ------------------------ #
 
