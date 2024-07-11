@@ -765,6 +765,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['rolladice_cmds_executed'] += 1
         save_data(data)
 
         radnum = randrange(0, 7)
@@ -809,6 +810,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['coinflip_cmds_executed'] += 1
         save_data(data)
 
         coinflip = randrange(-1, 2)
@@ -855,6 +857,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['rps_cmds_executed'] += 1
         save_data(data)
 
         if message.content == '.rps':
@@ -927,6 +930,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['highlow_cmds_executed'] += 1
         save_data(data)
 
         number = random.randint(
@@ -1007,6 +1011,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['scramble_cmds_executed'] += 1
         save_data(data)
 
         word = random.choice(WORDS)
@@ -1062,6 +1067,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['trivia_cmds_executed'] += 1
         save_data(data)
 
         question = random.choice(trivia_questions)
@@ -1129,6 +1135,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['riddle_cmds_executed'] += 1
         save_data(data)
 
         question = random.choice(riddle_questions)
@@ -1189,6 +1196,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['eightball_cmds_executed'] += 1
         save_data(data)
 
         if message.content == '.8ball':
@@ -1238,6 +1246,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['truthordare_cmds_executed'] += 1
         save_data(data)
 
         if message.content == '.td':
@@ -1299,6 +1308,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['fact_cmds_executed'] += 1
         save_data(data)
 
         fact = random.choice(facts)
@@ -1342,6 +1352,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['jokes_cmds_executed'] += 1
         save_data(data)
 
         joke = random.choice(joke_)
@@ -1385,6 +1396,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['quote_cmds_executed'] += 1
         save_data(data)
 
         # Choose a Random Qoute
@@ -1430,6 +1442,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['wouldyourather_cmds_executed'] += 1
         save_data(data)
 
         # Choose a random question
@@ -1487,6 +1500,7 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
+        data[player]['thisorthat_cmds_executed'] += 1
         save_data(data)
 
         question = random.choice(questions_tort)
@@ -1524,19 +1538,16 @@ async def on_message(message):
             coinflip_cmds_executed = data[player]['coinflip_cmds_executed']
             trivia_cmds_executed = data[player]['trivia_cmds_executed']
             riddle_cmds_executed = data[player]['riddle_cmds_executed']
-            truthordare_cmds_executed = data[player][
-                'truthordare_cmds_executed']
-            fact_cmds_executed = data[player]['fact_cmds_executed']
+            truthordare_cmds_executed = data[player]['truthordare_cmds_executed']
             jokes_cmds_executed = data[player]['jokes_cmds-executed']
             quote_cmds_executed = data[player]['quote_cmds_executed']
-            wouldyourather_cmds_executed = data[player][
-                'wouldyourather_cmds_executed']
+            wouldyourather_cmds_executed = data[player]['wouldyourather_cmds_executed']
             thisorthat_cmds_executed = data[player]['thisorthat_cmds_executed']
 
             embedstats = discord.Embed(
                 title="Stats",
                 description=
-                f"Here are the stats of **{message.author}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Fact Commands Executed:` {fact_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
+                f"Here are the stats of **{message.author}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
             )
 
             await message.channel.send(embed=embedstats)
@@ -1697,6 +1708,7 @@ async def rolladice(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['rolladice_cmds_executed'] += 1
     save_data(data)
 
     radnum = randrange(0, 7)
@@ -1744,6 +1756,7 @@ async def coinflip(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['coinflip_cmds_executed'] += 1
     save_data(data)
 
     coinflip = randrange(-1, 2)
@@ -1795,6 +1808,7 @@ async def rps(interaction: discord.Interaction, choice: str):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['rps_cmds_executed'] += 1
     save_data(data)
 
     choices = ['rock', 'paper', 'scissors']
@@ -1861,6 +1875,7 @@ async def highlow(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['highlow_cmds_executed'] += 1
     save_data(data)
 
     number = random.randint(1,
@@ -1945,6 +1960,7 @@ async def scramble(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['scramble_cmds_executed'] += 1
     save_data(data)
 
     word = random.choice(WORDS)
@@ -2016,6 +2032,7 @@ async def trivia(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['trivia_cmds_executed'] += 1
     save_data(data)
 
     question = random.choice(trivia_questions)
@@ -2087,6 +2104,7 @@ async def riddle(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['riddle_cmds_executed'] += 1
     save_data(data)
 
     question = random.choice(riddle_questions)
@@ -2151,6 +2169,7 @@ async def ball(interaction: discord.Interaction, question: str):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['eightball_cmds_executed'] += 1
     save_data(data)
 
     response = random.choice(eight_ball_responses)
@@ -2200,6 +2219,7 @@ async def truthordare(interaction: discord.Interaction, choice: str):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['truthordare_cmds_executed'] += 1
     save_data(data)
 
     choices = ['truth', 'dare']
@@ -2257,6 +2277,7 @@ async def fact(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['fact_cmds_executed'] += 1
     save_data(data)
 
     fact = random.choice(facts)
@@ -2304,6 +2325,7 @@ async def jokes(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['jokes_cmds_executed'] += 1
     save_data(data)
 
     joke = random.choice(joke_)
@@ -2351,6 +2373,7 @@ async def quote(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['quote_cmds_executed'] += 1
     save_data(data)
 
     # Choose a Random Qoute
@@ -2402,6 +2425,7 @@ async def wyr(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['wouldyourather_cmds_executed'] += 1
     save_data(data)
 
     # Choose a random question
@@ -2463,6 +2487,7 @@ async def tort(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
+    data[player]['thisorthat_cmds_executed'] += 1
     save_data(data)
 
     question = random.choice(questions_tort)
@@ -2506,17 +2531,15 @@ async def stats(interaction: discord.Interaction):
         trivia_cmds_executed = data[player]['trivia_cmds_executed']
         riddle_cmds_executed = data[player]['riddle_cmds_executed']
         truthordare_cmds_executed = data[player]['truthordare_cmds_executed']
-        fact_cmds_executed = data[player]['fact_cmds_executed']
         jokes_cmds_executed = data[player]['jokes_cmds-executed']
         quote_cmds_executed = data[player]['quote_cmds_executed']
-        wouldyourather_cmds_executed = data[player][
-            'wouldyourather_cmds_executed']
+        wouldyourather_cmds_executed = data[player]['wouldyourather_cmds_executed']
         thisorthat_cmds_executed = data[player]['thisorthat_cmds_executed']
 
         embedstats = discord.Embed(
             title="Stats",
             description=
-            f"Here are the stats of **{interaction.user}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Fact Commands Executed:` {fact_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
+            f"Here are the stats of **{interaction.user}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
         )
 
         await interaction.response.send_message(embed=embedstats)
