@@ -27,19 +27,23 @@ client = commands.Bot(command_prefix=['.'], intents=intents)
 async def on_ready():
 
     print('Gingery has connected to Discord!')
-    status = True
     # Sync Slash Commands
     await client.tree.sync()
 
     total_members = 0
+    total_servers = 0
     
     for guild in client.guilds:
         total_members += len(guild.members)
+        total_servers += 1
+
+    print(f"Total Servers: {total_servers}")
+    print(f"Total Members: {total_members}")
     # Status of the Bot
     await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help & {total_members} People"))
 
 
-# ------------------------ LISTS ------------------------ #
+# ------------------------ LISTS AND VARIABLES ------------------------ #
 
 trivia_questions = [{
     "question": "What is the capital of France?",
@@ -549,7 +553,9 @@ questions_tort = [
     ("Robots or Aliens?"),
 ]
 
+
 # ------------------------ TEXT COMMANDS ------------------------ #
+
 
 @client.event
 async def on_message(message):
@@ -616,6 +622,7 @@ async def on_message(message):
                                inline=False)
             embedvar.set_footer(text="Page 1/3")
             await message.channel.send(embed=embedvar)
+
         else:
             choices = ['1', '2', '3']
             user_choice = message.content.split(
@@ -692,11 +699,15 @@ async def on_message(message):
             if user_choice == '3':
                 embedvar3 = discord.Embed(
                     title="HELP",
-                    description="List of Commands to use the Bot:")
+                    description="- List of Commands to use the Bot:")
                 embedvar3.add_field(
                     name="`.tort`",
                     value="- The Bot asks you a This or That Question.",
                     inline=False)
+                embedvar3.add_field(
+                    name="`.invite`",
+                    value="- Invite the Bot to your Server.",
+                )
                 embedvar3.set_footer(text="Page 3/3")
                 await message.channel.send(embed=embedvar3)
 
@@ -882,6 +893,7 @@ async def on_message(message):
             response = random.choice(eight_ball_responses)
             await message.channel.send(f'{response}')
 
+
     # Truth or Dare Command
     if message.content.startswith('.td'):
         print("TD Command Executed by " + str(message.author))
@@ -914,7 +926,6 @@ async def on_message(message):
 
     # Jokes Command
     if message.content.startswith('.joke'):
-        print("Joke Command Executed by " + str(message.author))
         joke = random.choice(joke_)
         await message.channel.send(joke)
 
@@ -954,6 +965,11 @@ async def on_message(message):
         # Adding reactions for choices
         await message.add_reaction("1️⃣")
         await message.add_reaction("2️⃣")
+
+    # Invite Command
+    if message.content.startswith('.invite'):
+        print("Invite Command Executed by " + str(message.author))
+        await message.channel.send(f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot")
 
 
 # ------------------------ SLASH COMMANDS ------------------------ #
@@ -1067,6 +1083,10 @@ async def help(interaction: discord.Interaction, page: str):
             name="`.tort`",
             value="- The Bot asks you a This or That Question.",
             inline=False)
+        embedvar3.add_field(
+            name="`.invite`",
+            value="- Invite the Bot to your Server.",
+        )
         embedvar3.set_footer(text="Page 3/3")
         await interaction.response.send_message(embed=embedvar3)
 
@@ -1079,7 +1099,7 @@ async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
     radnum = randrange(0, 7)
     await interaction.response.send_message(f"The Number is... {radnum}.")
-
+    
 
 # Coin Flip Slash Command
 @client.tree.command(
@@ -1356,6 +1376,16 @@ async def tort(interaction: discord.Interaction):
     # Adding reactions for choices
     await message.add_reaction("1️⃣")
     await message.add_reaction("2️⃣")
+
+
+@client.tree.command(
+    name='invite',
+    description='Invite the Bot to your server'
+) 
+async def invite(interaction: discord.Interaction):
+    print("Invite Command Executed by " + str(interaction.user))
+    await interaction.response.send_message(f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot")
+
 
 # ------------------------ TOKEN ------------------------ #
 
