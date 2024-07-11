@@ -718,6 +718,17 @@ async def on_message(message):
         await message.channel.send("The Number is... ")
         await message.channel.send(radnum)
 
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+        
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+
     # Coin Flip Command
     if message.content.startswith('.coinflip'):
         print("Coinflip Command Executed by " + str(message.author))
@@ -726,6 +737,17 @@ async def on_message(message):
             await message.channel.send("Its a Head!")
         else:
             await message.channel.send("Its a Tail!")
+
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Rock Paper Scissors Command
     if message.content.startswith('.rps'):
@@ -761,6 +783,17 @@ async def on_message(message):
                 await message.channel.send(
                     f'You chose {user_choice} and I chose {bot_choice}. I win!'
                 )
+
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # HighLow Command
     if message.content.startswith('.highlow'):
@@ -804,6 +837,17 @@ async def on_message(message):
         await message.channel.send(
             'You have used all your attempts. The number was {}.'.format(
                 number))
+
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+        
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Word Scramble Command
     if message.content.startswith('.scramble'):
@@ -881,6 +925,17 @@ async def on_message(message):
                     'Incorrect! The correct answer was: {}'.format(
                         question["answer"]))
 
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+
     # 8-Ball Command
     if message.content.startswith('.8ball'):
         print("8ball Command Executed by " + str(message.author))
@@ -893,6 +948,16 @@ async def on_message(message):
             response = random.choice(eight_ball_responses)
             await message.channel.send(f'{response}')
 
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Truth or Dare Command
     if message.content.startswith('.td'):
@@ -918,16 +983,49 @@ async def on_message(message):
             elif user_choice == 'dare':
                 await message.channel.send(random.choice(dares))
 
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+
     # Fact Command
     if message.content.startswith('.fact'):
         print("Fact Command Executed by " + str(message.author))
         fact = random.choice(facts)
         await message.channel.send(fact)
 
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+
     # Jokes Command
     if message.content.startswith('.joke'):
         joke = random.choice(joke_)
         await message.channel.send(joke)
+
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Quote Command
     if message.content.startswith('.quote'):
@@ -936,6 +1034,17 @@ async def on_message(message):
         quote = random.choice(quotes)
         # Send the Quote
         await message.channel.send(quote)
+
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Would you Rather Command
     if message.content.startswith('.wyr'):
@@ -956,6 +1065,17 @@ async def on_message(message):
         await message.add_reaction("🅰️")
         await message.add_reaction("🅱️")
 
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+
     # This or That Command
     if message.content.startswith('.tort'):
         question = random.choice(questions_tort)
@@ -965,6 +1085,17 @@ async def on_message(message):
         # Adding reactions for choices
         await message.add_reaction("1️⃣")
         await message.add_reaction("2️⃣")
+
+        button2 = Button(
+            label="Invite Bot",
+            url=
+            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
+
+        if random.random() < 0.25:
+            view = View()
+            view.add_item(button2)
+            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Invite Command
     if message.content.startswith('.invite'):
@@ -1099,6 +1230,17 @@ async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
     radnum = randrange(0, 7)
     await interaction.response.send_message(f"The Number is... {radnum}.")
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
     
 
 # Coin Flip Slash Command
@@ -1112,6 +1254,17 @@ async def coinflip(interaction: discord.Interaction):
         await interaction.response.send_message("Its a Head!")
     else:
         await interaction.response.send_message("Its a Tail!")
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # Rock Paper Scissors Slash Command
@@ -1141,6 +1294,17 @@ async def rps(interaction: discord.Interaction, choice: str):
     else:
         await interaction.response.send_message(
             f'You chose {choice} and I chose {bot_choice}. I win!')
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # High Low Slash Command
@@ -1188,6 +1352,17 @@ async def highlow(interaction: discord.Interaction):
     await interaction.followup.send(
         'You have used all your attempts. The number was {}.'.format(number))
 
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+
 
 # Word Scramble Slash Command
 @client.tree.command(
@@ -1222,6 +1397,17 @@ async def scramble(interaction: discord.Interaction):
             f'Sorry {interaction.user.mention}, the correct word was: **{word}**.'
         )
 
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+
 
 # Trivia Slash Command
 @client.tree.command(
@@ -1248,6 +1434,17 @@ async def trivia(interaction: discord.Interaction):
             await interaction.followup.send(
                 'Incorrect! The correct answer was: {}'.format(
                     question["answer"]))
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # Riddle Slash Command
@@ -1276,6 +1473,17 @@ async def riddle(interaction: discord.Interaction):
                 'Incorrect! The correct answer was: {}'.format(
                     question["answer"]))
 
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+
 
 # 8Ball Slash Command
 @client.tree.command(
@@ -1286,6 +1494,17 @@ async def ball(interaction: discord.Interaction, question: str):
     response = random.choice(eight_ball_responses)
     await interaction.response.send_message(
         f'Question: {question}\nAnswer: {response}')
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # Truth or Dare Slash Command
@@ -1298,7 +1517,7 @@ async def truthordare(interaction: discord.Interaction, choice: str):
 
     if choice not in choices:
         await interaction.response.send_message(
-            f"Invalid Choice! Please choose either truth or dare.\nExample: `/td truth`"
+            f"Invalid Choice! Please choose either truth or dare.\nExample: `/truthordare truth`"
         )
         return
 
@@ -1306,6 +1525,17 @@ async def truthordare(interaction: discord.Interaction, choice: str):
         await interaction.response.send_message(random.choice(truths))
     elif choice == 'dare':
         await interaction.response.send_message(random.choice(dares))
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # Fact Slash Command
@@ -1317,6 +1547,17 @@ async def fact(interaction: discord.Interaction):
     fact = random.choice(facts)
     await interaction.response.send_message(fact)
 
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+
 
 # Joke Slash Command
 @client.tree.command(
@@ -1326,6 +1567,17 @@ async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
     joke = random.choice(joke_)
     await interaction.response.send_message(joke)
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # Quote Slash Command
@@ -1338,6 +1590,17 @@ async def quote(interaction: discord.Interaction):
     quote = random.choice(quotes)
     # Send the Quote
     await interaction.response.send_message(quote)
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 # Would you Rather Slash Command
@@ -1362,6 +1625,17 @@ async def wyr(interaction: discord.Interaction):
     await message.add_reaction("🅰️")
     await message.add_reaction("🅱️")
 
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+
 
 # This or That Slash Command
 @client.tree.command(
@@ -1376,6 +1650,17 @@ async def tort(interaction: discord.Interaction):
     # Adding reactions for choices
     await message.add_reaction("1️⃣")
     await message.add_reaction("2️⃣")
+
+    button2 = Button(
+        label="Invite Bot",
+        url=
+        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
 
 
 @client.tree.command(
