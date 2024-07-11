@@ -1,3 +1,4 @@
 .replit
 poetry.lock
 pyproject.toml
+stats.json

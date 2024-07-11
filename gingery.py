@@ -10,8 +10,12 @@ import random
 from random import randrange
 import time
 import asyncio
+import json
 
 # ------------------------ SETUP ------------------------ #
+
+# Define the path to the JSON file for storing player data
+DATA_FILE = 'stats.json'
 
 # Intents of the Bot
 intents = discord.Intents.default()
@@ -23,6 +27,7 @@ client = commands.Bot(command_prefix=['.'], intents=intents)
 
 # ------------------------ STARTUP ------------------------ #
 
+
 @client.event
 async def on_ready():
 
@@ -32,7 +37,7 @@ async def on_ready():
 
     total_members = 0
     total_servers = 0
-    
+
     for guild in client.guilds:
         total_members += len(guild.members)
         total_servers += 1
@@ -40,10 +45,13 @@ async def on_ready():
     print(f"Total Servers: {total_servers}")
     print(f"Total Members: {total_members}")
     # Status of the Bot
-    await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help & {total_members} People"))
+    await client.change_presence(status=discord.Status.idle,
+                                 activity=discord.Activity(
+                                     type=discord.ActivityType.watching,
+                                     name=f"/help & {total_members} People"))
 
 
-# ------------------------ LISTS AND VARIABLES ------------------------ #
+# ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
 trivia_questions = [{
     "question": "What is the capital of France?",
@@ -554,6 +562,24 @@ questions_tort = [
 ]
 
 
+# Load player data from the JSON file
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r') as f:
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                # Return an empty dictionary if the file is empty or malformed
+                return {}
+    return {}
+
+
+# Save player data to the JSON file
+def save_data(data):
+    with open(DATA_FILE, 'w') as f:
+        json.dump(data, f, indent=4)
+
+
 # ------------------------ TEXT COMMANDS ------------------------ #
 
 
@@ -565,6 +591,7 @@ async def on_message(message):
     # About Command
     if message.content.startswith('.about'):
         print("About Command Executed by " + str(message.author))
+
         embedvar = discord.Embed(
             title="About Gingery",
             description=
@@ -593,6 +620,7 @@ async def on_message(message):
     # Help Command
     if message.content.startswith('.help'):
         print("Help Command Executed by " + str(message.author))
+
         if message.content == '.help':
             embedvar = discord.Embed(
                 title="HELP", description="List of Commands to use the Bot:")
@@ -714,6 +742,31 @@ async def on_message(message):
     # Roll a Dice Command
     if message.content.startswith('.rolladice'):
         print("Rolladice Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         radnum = randrange(0, 7)
         await message.channel.send("The Number is... ")
         await message.channel.send(radnum)
@@ -723,15 +776,41 @@ async def on_message(message):
             url=
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
-        
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Coin Flip Command
     if message.content.startswith('.coinflip'):
         print("Coinflip Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         coinflip = randrange(-1, 2)
         if coinflip == 1:
             await message.channel.send("Its a Head!")
@@ -747,11 +826,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Rock Paper Scissors Command
     if message.content.startswith('.rps'):
         print("RPS Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         if message.content == '.rps':
             await message.channel.send(
                 f"Invalid Choice! Please choose either rock, paper, or scissors.\nExample: `.rps rock`"
@@ -793,11 +898,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # HighLow Command
     if message.content.startswith('.highlow'):
         print("HighLow Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         number = random.randint(
             1, 100)  # Generate a random number between 1 and 100
 
@@ -843,15 +974,41 @@ async def on_message(message):
             url=
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
-        
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Word Scramble Command
     if message.content.startswith('.scramble'):
         print("Scramble Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         word = random.choice(WORDS)
         scrambled_word = ''.join(random.sample(word, len(word)))
         await message.channel.send(
@@ -882,6 +1039,31 @@ async def on_message(message):
     # Trivia Game Command
     if message.content.startswith('.trivia'):
         print("Trivia Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         question = random.choice(trivia_questions)
         await message.channel.send(question["question"])
 
@@ -897,14 +1079,58 @@ async def on_message(message):
         else:
             if answer.content.lower() == question["answer"].lower():
                 await message.channel.send('Correct!')
+
+                # Save Stats to Json File
+                if player not in data:
+                    data[player] = {
+                        'correct_trivia_answers': 0,
+                        'wrong_trivia_answers': 0
+                    }
+                data[player]['correct_trivia_answers'] += 1
+                save_data(data)
+
             else:
                 await message.channel.send(
                     'Incorrect! The correct answer was: {}'.format(
                         question["answer"]))
 
+                # Save Stats to Json File
+                if player not in data:
+                    data[player] = {
+                        'correct_trivia_answers': 0,
+                        'wrong_trivia_answers': 0
+                    }
+                data[player]['wrong_trivia_answers'] += 1
+                save_data(data)
+
     # Riddle Command
     if message.content.startswith('.riddle'):
         print("Riddle Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         question = random.choice(riddle_questions)
         await message.channel.send(question["question"])
 
@@ -934,11 +1160,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # 8-Ball Command
     if message.content.startswith('.8ball'):
         print("8ball Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         if message.content == '.8ball':
             await message.channel.send(
                 f"Please ask a question.\nExample: `.8ball Is Gingery the best?`"
@@ -957,11 +1209,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Truth or Dare Command
     if message.content.startswith('.td'):
         print("TD Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         if message.content == '.td':
             await message.channel.send(
                 f"Invalid Choice! Please choose either truth or dare.\nExample: `.td truth`"
@@ -992,11 +1270,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Fact Command
     if message.content.startswith('.fact'):
         print("Fact Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         fact = random.choice(facts)
         await message.channel.send(fact)
 
@@ -1009,10 +1313,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Jokes Command
     if message.content.startswith('.joke'):
+        print(f"Joke Command Executed by {message.author}")
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         joke = random.choice(joke_)
         await message.channel.send(joke)
 
@@ -1025,11 +1356,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Quote Command
     if message.content.startswith('.quote'):
         print("Quote Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         # Choose a Random Qoute
         quote = random.choice(quotes)
         # Send the Quote
@@ -1044,11 +1401,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # Would you Rather Command
     if message.content.startswith('.wyr'):
         print("Would You Rather Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         # Choose a random question
         question = random.choice(questions_wyr)
 
@@ -1056,7 +1439,8 @@ async def on_message(message):
         embedwyr = discord.Embed(title="**Would You Rather**")
         embedwyr.add_field(name="Option 1", value=question[0], inline=False)
         embedwyr.add_field(name="Option 2", value=question[1], inline=False)
-        embedwyr.set_footer(text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
+        embedwyr.set_footer(
+            text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
 
         # Send the message
         message = await message.channel.send(embed=embedwyr)
@@ -1074,10 +1458,37 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
 
     # This or That Command
     if message.content.startswith('.tort'):
+        print(f"This or That Command Executed by " + str(message.author))
+        data = load_data()
+        player = str(message.author)
+
+        # Save stats to Json File
+        if player not in data:
+            data[player] = {
+                'commands_executed': 0,
+                'rolladice_cmds_executed': 0,
+                'eightball_cmds_executed': 0,
+                'coinflip_cmds_executed': 0,
+                'rps_cmds_executed': 0,
+                'highlow_cmds_executed': 0,
+                'scramble_cmds_executed': 0,
+                'trivia_cmds_executed': 0,
+                'riddle_cmds_executed': 0,
+                'truthordare_cmds_executed': 0,
+                'fact_cmds_executed:': 0,
+                'jokes_cmds-executed': 0,
+                'quote_cmds_executed': 0,
+                'wouldyourather_cmds_executed': 0,
+                'thisorthat_cmds_executed': 0
+            }
+        data[player]['commands_executed'] += 1
+        save_data(data)
+
         question = random.choice(questions_tort)
         embed = discord.Embed(title="This or That", description=question)
         message = await message.channel.send(embed=embed)
@@ -1095,22 +1506,60 @@ async def on_message(message):
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
-            await message.channel.send("Dont forget to **Invite the Bot to your server**!", view=view)
+            await message.channel.send(
+                "Dont forget to **Invite the Bot to your server**!", view=view)
+
+    # Stats Command
+    if message.content.startswith('.stats'):
+        print(f"Stats Command Executed by {message.author}")
+        data = load_data()
+        player = str(message.author)
+        if player in data:
+            commands_executed = data[player]['commands_executed']
+            rolladice_cmds_executed = data[player]['rolladice_cmds_executed']
+            rps_cmds_executed = data[player]['rps_cmds_executed']
+            highlow_cmds_executed = data[player]['highlow_cmds_executed']
+            scramble_cmds_executed = data[player]['scramble_cmds_executed']
+            eightball_cmds_executed = data[player]['eightball_cmds_executed']
+            coinflip_cmds_executed = data[player]['coinflip_cmds_executed']
+            trivia_cmds_executed = data[player]['trivia_cmds_executed']
+            riddle_cmds_executed = data[player]['riddle_cmds_executed']
+            truthordare_cmds_executed = data[player][
+                'truthordare_cmds_executed']
+            fact_cmds_executed = data[player]['fact_cmds_executed']
+            jokes_cmds_executed = data[player]['jokes_cmds-executed']
+            quote_cmds_executed = data[player]['quote_cmds_executed']
+            wouldyourather_cmds_executed = data[player][
+                'wouldyourather_cmds_executed']
+            thisorthat_cmds_executed = data[player]['thisorthat_cmds_executed']
+
+            embedstats = discord.Embed(
+                title="Stats",
+                description=
+                f"Here are the stats of **{message.author}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Fact Commands Executed:` {fact_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
+            )
+
+            await message.channel.send(embed=embedstats)
+        else:
+            await message.channel.send(f"No statistics found for {player}.")
 
     # Invite Command
     if message.content.startswith('.invite'):
         print("Invite Command Executed by " + str(message.author))
-        await message.channel.send(f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot")
+
+        await message.channel.send(
+            f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        )
 
 
 # ------------------------ SLASH COMMANDS ------------------------ #
 
+
 # About Slash Command
-@client.tree.command(
-    name='about', 
-    description='Description about the bot.')
+@client.tree.command(name='about', description='Description about the bot.')
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
+
     embedvar = discord.Embed(
         title="About Gingery",
         description=
@@ -1138,11 +1587,10 @@ async def about(interaction: discord.Interaction):
 
 
 # Help Slash Command
-@client.tree.command(
-    name='help', 
-    description='List of commands.')
+@client.tree.command(name='help', description='List of commands.')
 async def help(interaction: discord.Interaction, page: str):
     print("Help Command Executed by " + str(interaction.user))
+
     choices = ['1', '2', '3']
 
     if page not in choices:
@@ -1223,11 +1671,34 @@ async def help(interaction: discord.Interaction, page: str):
 
 
 # Roll a Dice Slash Command
-@client.tree.command(
-    name='rolladice', 
-    description='Roll a dice.')
+@client.tree.command(name='rolladice', description='Roll a dice.')
 async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     radnum = randrange(0, 7)
     await interaction.response.send_message(f"The Number is... {radnum}.")
 
@@ -1240,15 +1711,41 @@ async def rolladice(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
-    
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
+
 
 # Coin Flip Slash Command
-@client.tree.command(
-    name='coinflip', 
-    description='Flips a Coin.')
+@client.tree.command(name='coinflip', description='Flips a Coin.')
 async def coinflip(interaction: discord.Interaction):
     print("Coinflip Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     coinflip = randrange(-1, 2)
     if coinflip == 1:
         await interaction.response.send_message("Its a Head!")
@@ -1264,15 +1761,42 @@ async def coinflip(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Rock Paper Scissors Slash Command
-@client.tree.command(
-    name='rps', 
-    description='Play Rock Paper Scissors with the Bot.')
+@client.tree.command(name='rps',
+                     description='Play Rock Paper Scissors with the Bot.')
 async def rps(interaction: discord.Interaction, choice: str):
     print("RPS Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     choices = ['rock', 'paper', 'scissors']
 
     if choice not in choices:
@@ -1304,15 +1828,41 @@ async def rps(interaction: discord.Interaction, choice: str):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # High Low Slash Command
-@client.tree.command(
-    name='highlow', 
-    description='Play High Low with the Bot.')
+@client.tree.command(name='highlow', description='Play High Low with the Bot.')
 async def highlow(interaction: discord.Interaction):
     print("HighLow Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     number = random.randint(1,
                             100)  # Generate a random number between 1 and 100
 
@@ -1361,15 +1911,42 @@ async def highlow(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Word Scramble Slash Command
-@client.tree.command(
-    name='scramble', 
-    description='The Bot gives you a Word to Unscramble.')
+@client.tree.command(name='scramble',
+                     description='The Bot gives you a Word to Unscramble.')
 async def scramble(interaction: discord.Interaction):
     print("Scramble Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     word = random.choice(WORDS)
     scrambled_word = ''.join(random.sample(word, len(word)))
     await interaction.response.send_message(
@@ -1406,15 +1983,41 @@ async def scramble(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Trivia Slash Command
-@client.tree.command(
-    name='trivia', 
-    description='The Bots asks you a question')
+@client.tree.command(name='trivia', description='The Bots asks you a question')
 async def trivia(interaction: discord.Interaction):
     print("Trivia Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     question = random.choice(trivia_questions)
     await interaction.response.send_message(question["question"])
 
@@ -1430,10 +2033,17 @@ async def trivia(interaction: discord.Interaction):
     else:
         if answer.content.lower() == question["answer"].lower():
             await interaction.followup.send('Correct!')
+
+            data[player]['correct_trivia_answers'] += 1
+            save_data(data)
+
         else:
             await interaction.followup.send(
                 'Incorrect! The correct answer was: {}'.format(
                     question["answer"]))
+
+            data[player]['wrong_trivia_answers'] += 1
+            save_data(data)
 
     button2 = Button(
         label="Invite Bot",
@@ -1444,15 +2054,41 @@ async def trivia(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Riddle Slash Command
-@client.tree.command(
-    name='riddle', 
-    description='The Bot asks you a Riddle.')
+@client.tree.command(name='riddle', description='The Bot asks you a Riddle.')
 async def riddle(interaction: discord.Interaction):
     print("Riddle Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     question = random.choice(riddle_questions)
     await interaction.response.send_message(question["question"])
 
@@ -1482,15 +2118,41 @@ async def riddle(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # 8Ball Slash Command
-@client.tree.command(
-    name='8ball', 
-    description='Ask the Bot a Question.')
+@client.tree.command(name='8ball', description='Ask the Bot a Question.')
 async def ball(interaction: discord.Interaction, question: str):
     print("8ball Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     response = random.choice(eight_ball_responses)
     await interaction.response.send_message(
         f'Question: {question}\nAnswer: {response}')
@@ -1504,15 +2166,42 @@ async def ball(interaction: discord.Interaction, question: str):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Truth or Dare Slash Command
-@client.tree.command(
-    name='truthordare', 
-    description='The Bot gives you a Truth or a Dare.')
+@client.tree.command(name='truthordare',
+                     description='The Bot gives you a Truth or a Dare.')
 async def truthordare(interaction: discord.Interaction, choice: str):
     print("TD Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     choices = ['truth', 'dare']
 
     if choice not in choices:
@@ -1535,15 +2224,41 @@ async def truthordare(interaction: discord.Interaction, choice: str):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Fact Slash Command
-@client.tree.command(
-    name='fact', 
-    description='The Bot tells you a Fact.')
+@client.tree.command(name='fact', description='The Bot tells you a Fact.')
 async def fact(interaction: discord.Interaction):
     print("Fact Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     fact = random.choice(facts)
     await interaction.response.send_message(fact)
 
@@ -1556,15 +2271,41 @@ async def fact(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Joke Slash Command
-@client.tree.command(
-    name='joke', 
-    description='The Bot tells you a Joke.')
+@client.tree.command(name='joke', description='The Bot tells you a Joke.')
 async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     joke = random.choice(joke_)
     await interaction.response.send_message(joke)
 
@@ -1577,15 +2318,41 @@ async def jokes(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Quote Slash Command
-@client.tree.command(
-    name='quote', 
-    description='The Bot tells you a Quote.')
+@client.tree.command(name='quote', description='The Bot tells you a Quote.')
 async def quote(interaction: discord.Interaction):
     print("Quote Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     # Choose a Random Qoute
     quote = random.choice(quotes)
     # Send the Quote
@@ -1600,7 +2367,10 @@ async def quote(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # Would you Rather Slash Command
@@ -1609,6 +2379,31 @@ async def quote(interaction: discord.Interaction):
     description='The Bot asks you a Would You Rather Question.')
 async def wyr(interaction: discord.Interaction):
     print("Would You Rather Command Executed by " + str(interaction.user))
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     # Choose a random question
     question = random.choice(questions_wyr)
 
@@ -1634,14 +2429,42 @@ async def wyr(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
 # This or That Slash Command
-@client.tree.command(
-    name='thisorthat', 
-    description='The Bot asks you a This or That Question.')
+@client.tree.command(name='thisorthat',
+                     description='The Bot asks you a This or That Question.')
 async def tort(interaction: discord.Interaction):
+    print(f"This or hat Command Executed by {interaction.user}")
+    data = load_data()
+    player = str(interaction.user)
+
+    # Save stats to Json File
+    if player not in data:
+        data[player] = {
+            'commands_executed': 0,
+            'rolladice_cmds_executed': 0,
+            'eightball_cmds_executed': 0,
+            'coinflip_cmds_executed': 0,
+            'rps_cmds_executed': 0,
+            'highlow_cmds_executed': 0,
+            'scramble_cmds_executed': 0,
+            'trivia_cmds_executed': 0,
+            'riddle_cmds_executed': 0,
+            'truthordare_cmds_executed': 0,
+            'fact_cmds_executed:': 0,
+            'jokes_cmds-executed': 0,
+            'quote_cmds_executed': 0,
+            'wouldyourather_cmds_executed': 0,
+            'thisorthat_cmds_executed': 0
+        }
+    data[player]['commands_executed'] += 1
+    save_data(data)
+
     question = random.choice(questions_tort)
     embed = discord.Embed(title="This or That", description=question[0])
 
@@ -1660,16 +2483,57 @@ async def tort(interaction: discord.Interaction):
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
-        await interaction.followup.send("Dont forget to **Invite the Bot to your server**!", view=view, ephemeral=True)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server**!",
+            view=view,
+            ephemeral=True)
 
 
-@client.tree.command(
-    name='invite',
-    description='Invite the Bot to your server'
-) 
+# Stats Slash Command
+@client.tree.command(name='stats', description='The Bot shows you your Stats.')
+async def stats(interaction: discord.Interaction):
+    print(f"Stats Command Executed by {interaction.user}")
+    data = load_data()
+    player = str(interaction.user)
+    if player in data:
+        commands_executed = data[player]['commands_executed']
+        rolladice_cmds_executed = data[player]['rolladice_cmds_executed']
+        rps_cmds_executed = data[player]['rps_cmds_executed']
+        highlow_cmds_executed = data[player]['highlow_cmds_executed']
+        scramble_cmds_executed = data[player]['scramble_cmds_executed']
+        eightball_cmds_executed = data[player]['eightball_cmds_executed']
+        coinflip_cmds_executed = data[player]['coinflip_cmds_executed']
+        trivia_cmds_executed = data[player]['trivia_cmds_executed']
+        riddle_cmds_executed = data[player]['riddle_cmds_executed']
+        truthordare_cmds_executed = data[player]['truthordare_cmds_executed']
+        fact_cmds_executed = data[player]['fact_cmds_executed']
+        jokes_cmds_executed = data[player]['jokes_cmds-executed']
+        quote_cmds_executed = data[player]['quote_cmds_executed']
+        wouldyourather_cmds_executed = data[player][
+            'wouldyourather_cmds_executed']
+        thisorthat_cmds_executed = data[player]['thisorthat_cmds_executed']
+
+        embedstats = discord.Embed(
+            title="Stats",
+            description=
+            f"Here are the stats of **{interaction.user}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Fact Commands Executed:` {fact_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
+        )
+
+        await interaction.response.send_message(embed=embedstats)
+    else:
+        await interaction.response.send_message(
+            f"No statistics found for {player}.")
+
+
+# Invite Slash Command
+@client.tree.command(name='invite',
+                     description='Invite the Bot to your server')
 async def invite(interaction: discord.Interaction):
     print("Invite Command Executed by " + str(interaction.user))
-    await interaction.response.send_message(f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot")
+
+    await interaction.response.send_message(
+        f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+    )
 
 
 # ------------------------ TOKEN ------------------------ #
