@@ -561,6 +561,14 @@ questions_tort = [
     ("Robots or Aliens?"),
 ]
 
+sentences = [
+    "The ubiquitous nature of technological advancements is profound.",
+    "Quantum mechanics often challenges our perception of reality.",
+    "Ephemeral beauty is fleeting but intensely captivating.",
+    "The juxtaposition of modernism and tradition creates unique architectural designs.",
+    "Exemplifying resilience in adversity demonstrates remarkable fortitude."
+]
+
 
 # Load player data from the JSON file
 def load_data():
@@ -1523,36 +1531,28 @@ async def on_message(message):
             await message.channel.send(
                 "Dont forget to **Invite the Bot to your server**!", view=view)
 
-    # Stats Command
-    if message.content.startswith('.stats'):
-        print(f"Stats Command Executed by {message.author}")
-        data = load_data()
-        player = str(message.author)
-        if player in data:
-            commands_executed = data[player]['commands_executed']
-            rolladice_cmds_executed = data[player]['rolladice_cmds_executed']
-            rps_cmds_executed = data[player]['rps_cmds_executed']
-            highlow_cmds_executed = data[player]['highlow_cmds_executed']
-            scramble_cmds_executed = data[player]['scramble_cmds_executed']
-            eightball_cmds_executed = data[player]['eightball_cmds_executed']
-            coinflip_cmds_executed = data[player]['coinflip_cmds_executed']
-            trivia_cmds_executed = data[player]['trivia_cmds_executed']
-            riddle_cmds_executed = data[player]['riddle_cmds_executed']
-            truthordare_cmds_executed = data[player]['truthordare_cmds_executed']
-            jokes_cmds_executed = data[player]['jokes_cmds-executed']
-            quote_cmds_executed = data[player]['quote_cmds_executed']
-            wouldyourather_cmds_executed = data[player]['wouldyourather_cmds_executed']
-            thisorthat_cmds_executed = data[player]['thisorthat_cmds_executed']
+    copypastestopwatch = {}
+    
+    # Copy Paste Game Command
+    if message.content.startswith('.copypaste'):
+        print("Copy Paste Game Command Executed by " + str(message.author))
+        user_id = message.author
+        sentence = random.choice(sentences)
+        await message.channel.send(f"Copy Paste this Sentence in Chat as fast as you can: \n {sentence}")
+        copypastestopwatch[user_id] = time.time()
 
-            embedstats = discord.Embed(
-                title="Stats",
-                description=
-                f"Here are the stats of **{message.author}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
-            )
+        def copypaste_check(msg):
+            return msg.author == message.author and msg.channel == message.channel
 
-            await message.channel.send(embed=embedstats)
-        else:
-            await message.channel.send(f"No statistics found for {player}.")
+        answer = await client.wait_for('message',
+                                      check=copypaste_check,
+                                      timeout=30)
+        answer = str(answer.content)
+
+        if answer == sentence:
+            start_time = copypastestopwatch.pop(user_id)
+            elapsed_time = time.time() - start_time
+            await message.channel.send(f"You got it right in {elapsed_time} sec.")
 
     # Invite Command
     if message.content.startswith('.invite'):
@@ -1561,6 +1561,36 @@ async def on_message(message):
         await message.channel.send(
             f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
+
+# ------------------------ ADMIN ONLY COMMANDS ------------------------ #
+    
+    # List of allowed server IDs
+    ALLOWED_GUILD_IDS = [1256973532462710936, 1268165953443856495]
+
+    # Update Status Command
+    def is_allowed_guild(message):
+        return message.guild.id in ALLOWED_GUILD_IDS
+    
+    # ADMIN: Update Status Command
+    if message.content.startswith('.admin:updatestatus'):
+        if is_allowed_guild(message):
+            total_members = 0
+            total_servers = 0
+            
+            for guild in client.guilds:
+                total_members += len(guild.members)
+                total_servers += 1
+
+            await message.channel.send(f"Total Servers: {total_servers}")
+            await message.channel.send(f"Total Members: {total_members}")
+            # Status of the Bot
+            await client.change_presence(status=discord.Status.idle,
+                                         activity=discord.Activity(
+                                             type=discord.ActivityType.watching,
+                                             name=f"/help & {total_members} People"))
+            await message.channel.send('Updated Status!')
+        else:
+            await message.channel.send('Restricted command')
 
 
 # ------------------------ SLASH COMMANDS ------------------------ #
@@ -2512,41 +2542,7 @@ async def tort(interaction: discord.Interaction):
             "Dont forget to **Invite the Bot to your server**!",
             view=view,
             ephemeral=True)
-
-
-# Stats Slash Command
-@client.tree.command(name='stats', description='The Bot shows you your Stats.')
-async def stats(interaction: discord.Interaction):
-    print(f"Stats Command Executed by {interaction.user}")
-    data = load_data()
-    player = str(interaction.user)
-    if player in data:
-        commands_executed = data[player]['commands_executed']
-        rolladice_cmds_executed = data[player]['rolladice_cmds_executed']
-        rps_cmds_executed = data[player]['rps_cmds_executed']
-        highlow_cmds_executed = data[player]['highlow_cmds_executed']
-        scramble_cmds_executed = data[player]['scramble_cmds_executed']
-        eightball_cmds_executed = data[player]['eightball_cmds_executed']
-        coinflip_cmds_executed = data[player]['coinflip_cmds_executed']
-        trivia_cmds_executed = data[player]['trivia_cmds_executed']
-        riddle_cmds_executed = data[player]['riddle_cmds_executed']
-        truthordare_cmds_executed = data[player]['truthordare_cmds_executed']
-        jokes_cmds_executed = data[player]['jokes_cmds-executed']
-        quote_cmds_executed = data[player]['quote_cmds_executed']
-        wouldyourather_cmds_executed = data[player]['wouldyourather_cmds_executed']
-        thisorthat_cmds_executed = data[player]['thisorthat_cmds_executed']
-
-        embedstats = discord.Embed(
-            title="Stats",
-            description=
-            f"Here are the stats of **{interaction.user}**: \n\n `Total Commands Executed:` {commands_executed} \n `Rolldice Commands Executed:` {rolladice_cmds_executed} \n `Rock Paper Scissors Commands Executed:` {rps_cmds_executed} \n `HighLow Commands Executed:` {highlow_cmds_executed} \n `Word Scramble Commands Executed:` {scramble_cmds_executed} \n `8Ball Commands Executed:` {eightball_cmds_executed} \n `Coinflip Commands Executed:` {coinflip_cmds_executed} \n `Trivia Commands Executed:` {trivia_cmds_executed} \n `Riddle Commands Executed:` {riddle_cmds_executed} \n `Truth or Dare Commands Executed:` {truthordare_cmds_executed} \n `Joke Commands Executed:` {jokes_cmds_executed} \n `Quote Commands Executed:` {quote_cmds_executed} \n `Would You Rather Commands Executed:` {wouldyourather_cmds_executed} \n "
-        )
-
-        await interaction.response.send_message(embed=embedstats)
-    else:
-        await interaction.response.send_message(
-            f"No statistics found for {player}.")
-
+        
 
 # Invite Slash Command
 @client.tree.command(name='invite',
@@ -2557,7 +2553,6 @@ async def invite(interaction: discord.Interaction):
     await interaction.response.send_message(
         f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
-
 
 # ------------------------ TOKEN ------------------------ #
 
