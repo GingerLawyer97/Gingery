@@ -4,6 +4,7 @@ import os
 from os import name
 import discord
 from discord import app_commands, message
+from discord.app_commands.transformers import InlineTransformer
 from discord.ext import commands
 from discord.ui import Button, View
 import random
@@ -570,6 +571,7 @@ sentences = [
 ]
 
 
+
 # Load player data from the JSON file
 def load_data():
     if os.path.exists(DATA_FILE):
@@ -607,7 +609,7 @@ async def on_message(message):
              ))
         embedvar.set_thumbnail(
             url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.2.0')
+        embedvar.set_footer(text='Version 0.2.2')
 
         # Create buttons
         button1 = Button(label="Support Server",
@@ -740,6 +742,10 @@ async def on_message(message):
                     name="`.tort`",
                     value="- The Bot asks you a This or That Question.",
                     inline=False)
+                embedvar3.add_field(
+                    name="`.copypaste",
+                    value="- Copy & Paste a random sentence while trying to get the best time.",
+                )
                 embedvar3.add_field(
                     name="`.invite`",
                     value="- Invite the Bot to your Server.",
@@ -1538,6 +1544,7 @@ async def on_message(message):
         print("Copy Paste Game Command Executed by " + str(message.author))
         user_id = message.author
         sentence = random.choice(sentences)
+        copypastestopwatch[user_id] = time.time()
         await message.channel.send(f"Copy Paste this Sentence in Chat as fast as you can: \n {sentence}")
         copypastestopwatch[user_id] = time.time()
 
@@ -1608,7 +1615,7 @@ async def about(interaction: discord.Interaction):
          ))
     embedvar.set_thumbnail(
         url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-    embedvar.set_footer(text='Version 0.2.0')
+    embedvar.set_footer(text='Version 0.2.2')
 
     # Create buttons
     button1 = Button(label="Support Server",
@@ -1703,6 +1710,10 @@ async def help(interaction: discord.Interaction, page: str):
             name="`.tort`",
             value="- The Bot asks you a This or That Question.",
             inline=False)
+        embedvar3.add_field(
+            name="`.copypaste",
+            value="- Copy & Paste a random sentence while trying to get the best time.",
+        )
         embedvar3.add_field(
             name="`.invite`",
             value="- Invite the Bot to your Server.",
@@ -2542,7 +2553,32 @@ async def tort(interaction: discord.Interaction):
             "Dont forget to **Invite the Bot to your server**!",
             view=view,
             ephemeral=True)
-        
+
+copypastestopwatch = {}
+
+# Copy Paste Slash Command
+@client.tree.command(name='copypaste',
+                    description='Copy & Paste a random sentence while trying to get the best time.')
+async def copypaste(interaction: discord.Interaction):
+    print("Copy Paste Game Command Executed by " + str(interaction.user))
+    user_id = interaction.user
+    sentence = random.choice(sentences)
+    await interaction.response.send_message(f"Copy Paste this Sentence in Chat as fast as you can: \n {sentence}")
+    copypastestopwatch[user_id] = time.time()
+
+    def copypaste_check(msg):
+        return msg.author == interaction.user and msg.channel == interaction.channel
+
+    answer = await client.wait_for('message',
+                                  check=copypaste_check,
+                                  timeout=30)
+    answer = str(answer.content)
+
+    if answer == sentence:
+        start_time = copypastestopwatch.pop(user_id)
+        elapsed_time = time.time() - start_time
+        await interaction.followup.send(f"You got it right in {elapsed_time} sec.")
+
 
 # Invite Slash Command
 @client.tree.command(name='invite',
