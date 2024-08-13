@@ -1560,6 +1560,8 @@ async def on_message(message):
             start_time = copypastestopwatch.pop(user_id)
             elapsed_time = time.time() - start_time
             await message.channel.send(f"You got it right in {elapsed_time} sec.")
+        else:
+            await message.channel.send("Nope.")
 
     # Invite Command
     if message.content.startswith('.invite'):
@@ -2578,6 +2580,8 @@ async def copypaste(interaction: discord.Interaction):
         start_time = copypastestopwatch.pop(user_id)
         elapsed_time = time.time() - start_time
         await interaction.followup.send(f"You got it right in {elapsed_time} sec.")
+    else:
+        await interaction.followup.send("Nope.")
 
 
 # Invite Slash Command
