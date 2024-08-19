@@ -1599,7 +1599,16 @@ async def on_message(message):
                                              name=f"/help & {total_members} People"))
             await message.channel.send('Updated Status!')
         else:
-            await message.channel.send('Restricted command')
+            await message.channel.send('Restricted command.')
+
+    #ADMIN: Server List Command
+    if message.content.startswith('.admin:serverlist'):
+        if is_allowed_guild(message):
+            for guild in client.guilds:
+                await message.channel.send(f"Server: {guild.name}")
+
+        else:
+            await message.channel.send('Restricted command.')
 
 
 # ------------------------ SLASH COMMANDS ------------------------ #
