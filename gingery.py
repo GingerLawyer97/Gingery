@@ -743,12 +743,14 @@ async def on_message(message):
                     value="- The Bot asks you a This or That Question.",
                     inline=False)
                 embedvar3.add_field(
-                    name="`.copypaste",
+                    name="`.copypaste`",
                     value="- Copy & Paste a random sentence while trying to get the best time.",
+                    inline=False
                 )
                 embedvar3.add_field(
                     name="`.invite`",
                     value="- Invite the Bot to your Server.",
+                    inline=False
                 )
                 embedvar3.set_footer(text="Page 3/3")
                 await message.channel.send(embed=embedvar3)
@@ -1722,12 +1724,14 @@ async def help(interaction: discord.Interaction, page: str):
             value="- The Bot asks you a This or That Question.",
             inline=False)
         embedvar3.add_field(
-            name="`.copypaste",
+            name="`.copypaste`",
             value="- Copy & Paste a random sentence while trying to get the best time.",
+            inline=False
         )
         embedvar3.add_field(
             name="`.invite`",
             value="- Invite the Bot to your Server.",
+            inline=False
         )
         embedvar3.set_footer(text="Page 3/3")
         await interaction.response.send_message(embed=embedvar3)
