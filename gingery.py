@@ -2864,7 +2864,6 @@ async def invite(interaction: discord.Interaction):
         f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
-
 # ------------------------ TOKEN ------------------------ #
 
 token = os.environ['TOKEN']
