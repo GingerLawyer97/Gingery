@@ -1,7 +1,7 @@
 # ------------------------ LIBRARIES ------------------------ #
 
 import os
-from os import name
+from os import name, path
 import discord
 from discord import app_commands, message
 from discord.app_commands.transformers import InlineTransformer
@@ -48,8 +48,8 @@ async def on_ready():
     # Status of the Bot
     await client.change_presence(status=discord.Status.idle,
                                  activity=discord.Activity(
-                                     type=discord.ActivityType.watching,
-                                     name=f"/help & {total_members} People"))
+                                     type=discord.ActivityType.playing,
+                                     name=f"with {total_members} People"))
 
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
@@ -571,7 +571,6 @@ sentences = [
 ]
 
 
-
 # Load player data from the JSON file
 def load_data():
     if os.path.exists(DATA_FILE):
@@ -609,7 +608,7 @@ async def on_message(message):
              ))
         embedvar.set_thumbnail(
             url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.2.2')
+        embedvar.set_footer(text='Version 0.2.3')
 
         # Create buttons
         button1 = Button(label="Support Server",
@@ -620,10 +619,14 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         # Create a view and add the buttons to it
         view = View()
         view.add_item(button1)
         view.add_item(button2)
+        view.add_item(button3)
 
         await message.channel.send(embed=embedvar, view=view)
 
@@ -744,14 +747,12 @@ async def on_message(message):
                     inline=False)
                 embedvar3.add_field(
                     name="`.copypaste`",
-                    value="- Copy & Paste a random sentence while trying to get the best time.",
-                    inline=False
-                )
-                embedvar3.add_field(
-                    name="`.invite`",
-                    value="- Invite the Bot to your Server.",
-                    inline=False
-                )
+                    value=
+                    "- Copy & Paste a random sentence while trying to get the best time.",
+                    inline=False)
+                embedvar3.add_field(name="`.invite`",
+                                    value="- Invite the Bot to your Server.",
+                                    inline=False)
                 embedvar3.set_footer(text="Page 3/3")
                 await message.channel.send(embed=embedvar3)
 
@@ -784,9 +785,11 @@ async def on_message(message):
         data[player]['rolladice_cmds_executed'] += 1
         save_data(data)
 
-        radnum = randrange(0, 7)
-        await message.channel.send("The Number is... ")
-        await message.channel.send(radnum)
+        radnum = randrange(1, 7)
+        embedrolladice = discord.Embed(
+            title=f"{message.author} rolled a Dice!",
+            description=f"The Dice rolled a **{radnum}**!")
+        await message.channel.send(embed=embedrolladice)
 
         button2 = Button(
             label="Invite Bot",
@@ -794,11 +797,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Coin Flip Command
     if message.content.startswith('.coinflip'):
@@ -829,11 +836,17 @@ async def on_message(message):
         data[player]['coinflip_cmds_executed'] += 1
         save_data(data)
 
-        coinflip = randrange(-1, 2)
+        coinflip = randrange(1, 3)
         if coinflip == 1:
-            await message.channel.send("Its a Head!")
+            embedcoinflip = discord.Embed(
+                title=f"{message.author} flipped a Coin!",
+                description=f"The Coin landed on **Heads**!")
+            await message.channel.send(embed=embedcoinflip)
         else:
-            await message.channel.send("Its a Tail!")
+            embedcoinflip = discord.Embed(
+                title=f"{message.author} flipped a Coin!",
+                description=f"The Coin landed on **Tails**!")
+            await message.channel.send(embed=embedcoinflip)
 
         button2 = Button(
             label="Invite Bot",
@@ -841,11 +854,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Rock Paper Scissors Command
     if message.content.startswith('.rps'):
@@ -877,9 +894,11 @@ async def on_message(message):
         save_data(data)
 
         if message.content == '.rps':
-            await message.channel.send(
-                f"Invalid Choice! Please choose either rock, paper, or scissors.\nExample: `.rps rock`"
-            )
+            await message.channel.send(embed=discord.Embed(
+                title="Invalid Command!",
+                description=
+                "Please use the command like this: `.rps <rock/paper/scissors>`",
+            ))
             return
         else:
             choices = ['rock', 'paper', 'scissors']
@@ -887,26 +906,34 @@ async def on_message(message):
                 ' ')[1].lower()  # Extract user's choice
 
             if user_choice not in choices:
-                await message.channel.send(
-                    f'Invalid choice! Please choose either rock, paper, or scissors.\nExample: `.rps rock`'
-                )
+                await message.channel.send(embed=discord.Embed(
+                    title="Invalid Choice!",
+                    description=
+                    "Please choose an valid choice: `rock/paper/scissors`",
+                ))
                 return
 
             bot_choice = random.choice(choices)
 
             if user_choice == bot_choice:
-                await message.channel.send(
-                    f'Both chose {user_choice}. It\'s a tie!')
+                await message.channel.send(embed=discord.Embed(
+                    title="Tie!",
+                    description="Both players chose the same thing.",
+                ))
             elif (user_choice == 'rock' and bot_choice == 'scissors') or \
                 (user_choice == 'paper' and bot_choice == 'rock') or \
                 (user_choice == 'scissors' and bot_choice == 'paper'):
-                await message.channel.send(
-                    f'You chose {user_choice} and I chose {bot_choice}. You win!'
-                )
+                await message.channel.send(embed=discord.Embed(
+                    title="You Win!",
+                    description=
+                    f"You chose {user_choice} and the Bot chose {bot_choice}.",
+                ))
             else:
-                await message.channel.send(
-                    f'You chose {user_choice} and I chose {bot_choice}. I win!'
-                )
+                await message.channel.send(embed=discord.Embed(
+                    title="You Lose!",
+                    description=
+                    f"You chose {user_choice} and the Bot chose {bot_choice}.",
+                ))
 
         button2 = Button(
             label="Invite Bot",
@@ -914,11 +941,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # HighLow Command
     if message.content.startswith('.highlow'):
@@ -952,9 +983,11 @@ async def on_message(message):
         number = random.randint(
             1, 100)  # Generate a random number between 1 and 100
 
-        await message.channel.send(
-            'I have chosen a number between 1 and 100. Try to guess it! You have 7 attempts.'
-        )
+        await message.channel.send(embed=discord.Embed(
+            title="Guess the Number!",
+            description=
+            "I'm thinking of a number between 1 and 100. Guess the number!",
+        ))
 
         def highlow_check(msg):
             return msg.author == message.author and msg.channel == message.channel
@@ -972,22 +1005,27 @@ async def on_message(message):
                 elif guess > number:
                     await message.channel.send('Too high! Try again.')
                 else:
-                    await message.channel.send(
-                        f'Congratulations {message.author}! You guessed it right!'
-                    )
+                    await message.channel.send(embed=discord.Embed(
+                        title="You Win!",
+                        description=
+                        f"Congratulations! You guessed the number!\nThe Number was: `{number}`.",
+                    ))
                     return
             except ValueError:
                 await message.channel.send(
                     'Invalid input! Please enter a number.')
             except asyncio.TimeoutError:
-                await message.channel.send(
-                    'Time\'s up! You didn\'t guess the number in time. The number was {}.'
-                    .format(number))
+                await message.channel.send(embed=discord.Embed(
+                    title="Time's Up!",
+                    description=
+                    f"You took too long to guess the number.\nThe  number was `{number}`.",
+                ))
                 return
 
-        await message.channel.send(
-            'You have used all your attempts. The number was {}.'.format(
-                number))
+        await message.channel.send(embed=discord.Embed(
+            title="Game Over!",
+            description=f"You ran out of attempts.\nThe number was `{number}`.",
+        ))
 
         button2 = Button(
             label="Invite Bot",
@@ -995,11 +1033,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Word Scramble Command
     if message.content.startswith('.scramble'):
@@ -1032,8 +1074,10 @@ async def on_message(message):
 
         word = random.choice(WORDS)
         scrambled_word = ''.join(random.sample(word, len(word)))
-        await message.channel.send(
-            f'Unscramble this word: **{scrambled_word}**')
+        await message.channel.send(embed=discord.Embed(
+            title="Unscramble the Word!",
+            description=f"Unscramble this word: `{scrambled_word}`",
+        ))
 
         def scramble_check(m):
             return m.author == message.author and m.channel == message.channel
@@ -1043,19 +1087,25 @@ async def on_message(message):
                                                check=scramble_check,
                                                timeout=30)
         except asyncio.TimeoutError:
-            await message.channel.send(
-                'Time is up! You took too long to answer. The correct word was: **{word}**.'
-            )
+            await message.channel.send(embed=discord.Embed(
+                title="Time's Up!",
+                description=
+                f"You took too long to unscramble the word.\nThe word was: `{word}`"
+            ))
             return
 
         if user_guess.content.lower() == word:
-            await message.channel.send(
-                f'Congratulations {message.author.mention}! You guessed the word correctly.'
-            )
+            await message.channel.send(embed=discord.Embed(
+                title="You Win!",
+                description=
+                f"Congratulations! You unscrambled the word correctly.\nThe word was: `{word}`"
+            ))
         else:
-            await message.channel.send(
-                f'Sorry {message.author.mention}, the correct word was: **{word}**.'
-            )
+            await message.channel.send(embed=discord.Embed(
+                title="You Lose!",
+                description=
+                f"Sorry, that's not the correct word.\nThe word was: `{word}`")
+                                       )
 
     # Trivia Game Command
     if message.content.startswith('.trivia'):
@@ -1087,7 +1137,9 @@ async def on_message(message):
         save_data(data)
 
         question = random.choice(trivia_questions)
-        await message.channel.send(question["question"])
+        await message.channel.send(embed=discord.Embed(
+            title="Trivia",
+            description=f"Answer this question:\n`{question['question']}`"))
 
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
@@ -1095,12 +1147,18 @@ async def on_message(message):
         try:
             answer = await client.wait_for('message', timeout=30, check=check)
         except asyncio.TimeoutError:
-            await message.channel.send(
-                'Time\'s up! The correct answer was: {}'.format(
-                    question["answer"]))
+            await message.channel.send(embed=discord.Embed(
+                title="Time's Up!",
+                description=
+                f"You took too long to answer the question.\nThe correct answer was: `{question['answer']}`"
+            ))
         else:
             if answer.content.lower() == question["answer"].lower():
-                await message.channel.send('Correct!')
+                await message.channel.send(embed=discord.Embed(
+                    title="Correct!",
+                    description=
+                    f"Congratulations! You answered correctly.\nThe correct answer was: `{question['answer']}`"
+                ))
 
                 # Save Stats to Json File
                 if player not in data:
@@ -1112,9 +1170,11 @@ async def on_message(message):
                 save_data(data)
 
             else:
-                await message.channel.send(
-                    'Incorrect! The correct answer was: {}'.format(
-                        question["answer"]))
+                await message.channel.send(embed=discord.Embed(
+                    title="Incorrect!",
+                    description=
+                    f"Sorry, that's incorrect.\nThe correct answer was: `{question['answer']}`"
+                ))
 
                 # Save Stats to Json File
                 if player not in data:
@@ -1155,7 +1215,9 @@ async def on_message(message):
         save_data(data)
 
         question = random.choice(riddle_questions)
-        await message.channel.send(question["question"])
+        await message.channel.send(embed=discord.Embed(
+            title="Riddle",
+            description=f"Solve this riddle:\n`{question['question']}`"))
 
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
@@ -1163,16 +1225,24 @@ async def on_message(message):
         try:
             answer = await client.wait_for('message', timeout=30, check=check)
         except asyncio.TimeoutError:
-            await message.channel.send(
-                'Time\'s up! The correct answer was: {}'.format(
-                    question["answer"]))
+            await message.channel.send(embed=discord.Embed(
+                title="Time's Up!",
+                description=
+                f"You took too long to solve the riddle.\nThe correct answer was: `{question['answer']}`"
+            ))
         else:
             if answer.content.lower() == question["answer"].lower():
-                await message.channel.send('Correct!')
+                await message.channel.send(embed=discord.Embed(
+                    title="Correct!",
+                    description=
+                    f"Congratulations! You solved the riddle correctly.\nThe correct answer was: `{question['answer']}`"
+                ))
             else:
-                await message.channel.send(
-                    'Incorrect! The correct answer was: {}'.format(
-                        question["answer"]))
+                await message.channel.send(embed=discord.Embed(
+                    title="Incorrect!",
+                    description=
+                    f"Sorry, that's incorrect.\nThe correct answer was: `{question['answer']}`"
+                ))
 
         button2 = Button(
             label="Invite Bot",
@@ -1180,11 +1250,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # 8-Ball Command
     if message.content.startswith('.8ball'):
@@ -1222,7 +1296,10 @@ async def on_message(message):
             return
         else:
             response = random.choice(eight_ball_responses)
-            await message.channel.send(f'{response}')
+            await message.channel.send(embed=discord.Embed(
+                title="8-Ball",
+                description=
+                f"Question: `{message.content[7:]}`\nAnswer: `{response}`"))
 
         button2 = Button(
             label="Invite Bot",
@@ -1230,11 +1307,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Truth or Dare Command
     if message.content.startswith('.td'):
@@ -1282,9 +1363,11 @@ async def on_message(message):
                 return
 
             if user_choice == 'truth':
-                await message.channel.send(random.choice(truths))
+                await message.channel.send(embed=discord.Embed(
+                    title="Truth", description=f"`{random.choice(truths)}`"))
             elif user_choice == 'dare':
-                await message.channel.send(random.choice(dares))
+                await message.channel.send(embed=discord.Embed(
+                    title="Dare", description=f"`{random.choice(dares)}`"))
 
         button2 = Button(
             label="Invite Bot",
@@ -1292,11 +1375,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Fact Command
     if message.content.startswith('.fact'):
@@ -1324,11 +1411,12 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
-        data[player]['fact_cmds_executed'] += 1
+        data[player]['fact_cmds_executed:'] += 1
         save_data(data)
 
         fact = random.choice(facts)
-        await message.channel.send(fact)
+        await message.channel.send(embed=discord.Embed(
+            title="Here's an Random Fact", description=f"`{fact}`"))
 
         button2 = Button(
             label="Invite Bot",
@@ -1336,11 +1424,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Jokes Command
     if message.content.startswith('.joke'):
@@ -1368,11 +1460,12 @@ async def on_message(message):
                 'thisorthat_cmds_executed': 0
             }
         data[player]['commands_executed'] += 1
-        data[player]['jokes_cmds_executed'] += 1
+        data[player]['jokes_cmds-executed'] += 1
         save_data(data)
 
         joke = random.choice(joke_)
-        await message.channel.send(joke)
+        await message.channel.send(embed=discord.Embed(
+            title="Here's an Random Joke", description=f"`{joke}`"))
 
         button2 = Button(
             label="Invite Bot",
@@ -1380,11 +1473,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Quote Command
     if message.content.startswith('.quote'):
@@ -1418,7 +1515,8 @@ async def on_message(message):
         # Choose a Random Qoute
         quote = random.choice(quotes)
         # Send the Quote
-        await message.channel.send(quote)
+        await message.channel.send(embed=discord.Embed(
+            title="Here's an Interesting Quote", description=f"`{quote}`"))
 
         button2 = Button(
             label="Invite Bot",
@@ -1426,11 +1524,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # Would you Rather Command
     if message.content.startswith('.wyr'):
@@ -1468,15 +1570,9 @@ async def on_message(message):
         embedwyr = discord.Embed(title="**Would You Rather**")
         embedwyr.add_field(name="Option 1", value=question[0], inline=False)
         embedwyr.add_field(name="Option 2", value=question[1], inline=False)
-        embedwyr.set_footer(
-            text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
 
         # Send the message
         message = await message.channel.send(embed=embedwyr)
-
-        # Add reactions for users to choose
-        await message.add_reaction("🅰️")
-        await message.add_reaction("🅱️")
 
         button2 = Button(
             label="Invite Bot",
@@ -1484,11 +1580,15 @@ async def on_message(message):
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     # This or That Command
     if message.content.startswith('.tort'):
@@ -1523,47 +1623,55 @@ async def on_message(message):
         embed = discord.Embed(title="This or That", description=question)
         message = await message.channel.send(embed=embed)
 
-        # Adding reactions for choices
-        await message.add_reaction("1️⃣")
-        await message.add_reaction("2️⃣")
-
         button2 = Button(
             label="Invite Bot",
             url=
             "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+        button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+
         if random.random() < 0.25:
             view = View()
             view.add_item(button2)
+            view.add_item(button3)
             await message.channel.send(
-                "Dont forget to **Invite the Bot to your server**!", view=view)
+                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
 
     copypastestopwatch = {}
-    
+
     # Copy Paste Game Command
     if message.content.startswith('.copypaste'):
         print("Copy Paste Game Command Executed by " + str(message.author))
         user_id = message.author
         sentence = random.choice(sentences)
         copypastestopwatch[user_id] = time.time()
-        await message.channel.send(f"Copy Paste this Sentence in Chat as fast as you can: \n {sentence}")
+        await message.channel.send(embed=discord.Embed(
+            title="Copy Paste",
+            description=
+            f"Copy Paste the following sentence in the chat as fast as you can:\n\n`{sentence}`"
+        ))
         copypastestopwatch[user_id] = time.time()
 
         def copypaste_check(msg):
             return msg.author == message.author and msg.channel == message.channel
 
         answer = await client.wait_for('message',
-                                      check=copypaste_check,
-                                      timeout=30)
+                                       check=copypaste_check,
+                                       timeout=30)
         answer = str(answer.content)
 
         if answer == sentence:
             start_time = copypastestopwatch.pop(user_id)
             elapsed_time = time.time() - start_time
-            await message.channel.send(f"You got it right in {elapsed_time} sec.")
+            await message.channel.send(embed=discord.Embed(
+                title="You got it right...",
+                description=f"in `{elapsed_time:.3f}` seconds"))
         else:
-            await message.channel.send("Nope.")
+            await message.channel.send(embed=discord.Embed(
+                title="Wrong!",
+                description="The text that you entered is incorrect."))
 
     # Invite Command
     if message.content.startswith('.invite'):
@@ -1574,20 +1682,20 @@ async def on_message(message):
         )
 
 # ------------------------ ADMIN ONLY COMMANDS ------------------------ #
-    
-    # List of allowed server IDs
+
+# List of allowed server IDs
     ALLOWED_GUILD_IDS = [1256973532462710936, 1268165953443856495]
 
     # Update Status Command
     def is_allowed_guild(message):
         return message.guild.id in ALLOWED_GUILD_IDS
-    
+
     # ADMIN: Update Status Command
     if message.content.startswith('.admin:updatestatus'):
         if is_allowed_guild(message):
             total_members = 0
             total_servers = 0
-            
+
             for guild in client.guilds:
                 total_members += len(guild.members)
                 total_servers += 1
@@ -1595,10 +1703,10 @@ async def on_message(message):
             await message.channel.send(f"Total Servers: {total_servers}")
             await message.channel.send(f"Total Members: {total_members}")
             # Status of the Bot
-            await client.change_presence(status=discord.Status.idle,
-                                         activity=discord.Activity(
-                                             type=discord.ActivityType.watching,
-                                             name=f"/help & {total_members} People"))
+            await client.change_presence(
+                status=discord.Status.idle,
+                activity=discord.Activity(type=discord.ActivityType.playing,
+                                          name=f"with {total_members} People"))
             await message.channel.send('Updated Status!')
         else:
             await message.channel.send('Restricted command.')
@@ -1628,7 +1736,7 @@ async def about(interaction: discord.Interaction):
          ))
     embedvar.set_thumbnail(
         url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-    embedvar.set_footer(text='Version 0.2.2')
+    embedvar.set_footer(text='Version 0.2.3')
 
     # Create buttons
     button1 = Button(label="Support Server",
@@ -1638,11 +1746,16 @@ async def about(interaction: discord.Interaction):
         url=
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
+   
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
 
     # Create a view and add the buttons to it
     view = View()
     view.add_item(button1)
     view.add_item(button2)
+    view.add_item(button3)
 
     await interaction.response.send_message(embed=embedvar, view=view)
 
@@ -1725,14 +1838,12 @@ async def help(interaction: discord.Interaction, page: str):
             inline=False)
         embedvar3.add_field(
             name="`.copypaste`",
-            value="- Copy & Paste a random sentence while trying to get the best time.",
-            inline=False
-        )
-        embedvar3.add_field(
-            name="`.invite`",
-            value="- Invite the Bot to your Server.",
-            inline=False
-        )
+            value=
+            "- Copy & Paste a random sentence while trying to get the best time.",
+            inline=False)
+        embedvar3.add_field(name="`.invite`",
+                            value="- Invite the Bot to your Server.",
+                            inline=False)
         embedvar3.set_footer(text="Page 3/3")
         await interaction.response.send_message(embed=embedvar3)
 
@@ -1767,8 +1878,11 @@ async def rolladice(interaction: discord.Interaction):
     data[player]['rolladice_cmds_executed'] += 1
     save_data(data)
 
-    radnum = randrange(0, 7)
-    await interaction.response.send_message(f"The Number is... {radnum}.")
+    radnum = randrange(1, 7)
+    await interaction.response.send_message(embed = discord.Embed(
+        title=f"{interaction.user} rolled a Dice!",
+        description=f"The Dice rolled a **{radnum}**!"
+    ))
 
     button2 = Button(
         label="Invite Bot",
@@ -1776,11 +1890,17 @@ async def rolladice(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -1817,9 +1937,15 @@ async def coinflip(interaction: discord.Interaction):
 
     coinflip = randrange(-1, 2)
     if coinflip == 1:
-        await interaction.response.send_message("Its a Head!")
+        await interaction.response.send_message(embed = discord.Embed(
+            title=f"{interaction.user} Flipped a Coin!",
+            description=f"The Coin landed on **Heads**!"
+        ))
     else:
-        await interaction.response.send_message("Its a Tail!")
+        await interaction.response.send_message(embed = discord.Embed(
+                                                    title=f"{interaction.user} Flipped a Coin!",
+                                                    description=f"The Coin landed on **Tails**!"
+                                                ))
 
     button2 = Button(
         label="Invite Bot",
@@ -1827,11 +1953,17 @@ async def coinflip(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -1878,16 +2010,22 @@ async def rps(interaction: discord.Interaction, choice: str):
     bot_choice = random.choice(choices)
 
     if choice == bot_choice:
-        await interaction.response.send_message(
-            f'Both chose {choice}. It\'s a tie!')
+        await interaction.response.send_message(embed = discord.Embed(
+            title="Tie!",
+            description="Both choose the same thing!"
+        ))
     elif (choice == 'rock' and bot_choice == 'scissors') or \
         (choice == 'paper' and bot_choice == 'rock') or \
         (choice == 'scissors' and bot_choice == 'paper'):
-        await interaction.response.send_message(
-            f'You chose {choice} and I chose {bot_choice}. You win!')
+        await interaction.response.send_message(embed = discord.Embed(
+            title="You Win!",
+            description=f"You choose `{choice}` and the Bot choose `{bot_choice}`!"
+        ))
     else:
-        await interaction.response.send_message(
-            f'You chose {choice} and I chose {bot_choice}. I win!')
+        await interaction.response.send_message(embed = discord.Embed(
+            title="You Lose!",
+            description=f"You choose `{choice}` and the Bot choose `{bot_choice}`!"
+        ))
 
     button2 = Button(
         label="Invite Bot",
@@ -1895,11 +2033,17 @@ async def rps(interaction: discord.Interaction, choice: str):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -1937,9 +2081,10 @@ async def highlow(interaction: discord.Interaction):
     number = random.randint(1,
                             100)  # Generate a random number between 1 and 100
 
-    await interaction.response.send_message(
-        'I have chosen a number between 1 and 100. Try to guess it! You have 7 attempts.'
-    )
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Guess the Number!",
+        description="I'm thinking of a number between 1 and 100. Try to guess it!"
+    ))
 
     def highlow_check(msg):
         return msg.author == interaction.user and msg.channel == interaction.channel
@@ -1957,21 +2102,25 @@ async def highlow(interaction: discord.Interaction):
             elif guess > number:
                 await interaction.followup.send('Too high! Try again.')
             elif guess == number:
-                await interaction.followup.send(
-                    f'Congratulations {interaction.user}! You guessed it right!'
-                )
+                await interaction.followup.send(embed = discord.Embed(
+                    title="You Win!",
+                    description=f"You guessed it right! The Number was: `{number}`!"
+                ))
                 return
         except ValueError:
             await interaction.followup.send(
                 'Invalid input! Please enter a number.')
         except asyncio.TimeoutError:
-            await interaction.followup.send(
-                'Time\'s up! You didn\'t guess the number in time. The number was {}.'
-                .format(number))
+            await interaction.followup.send(embed = discord.Embed(
+                title="Time's Up!",
+                description="You took too long to guess. The number was: `{number}`!"
+            ))
             return
 
-    await interaction.followup.send(
-        'You have used all your attempts. The number was {}.'.format(number))
+    await interaction.followup.send(embed = discord.Embed(
+        title="You Lose!",
+        description=f"You ran out of attempts. The number was: `{number}`!"
+    ))
 
     button2 = Button(
         label="Invite Bot",
@@ -1979,11 +2128,17 @@ async def highlow(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2021,8 +2176,10 @@ async def scramble(interaction: discord.Interaction):
 
     word = random.choice(WORDS)
     scrambled_word = ''.join(random.sample(word, len(word)))
-    await interaction.response.send_message(
-        f'Unscramble this word: **{scrambled_word}**')
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Unscramble the Word!",
+        description=f"Unscramble the following word: `{scrambled_word}`!"
+    ))
 
     def scramble_check(m):
         return m.author == interaction.user and m.channel == interaction.channel
@@ -2032,19 +2189,22 @@ async def scramble(interaction: discord.Interaction):
                                            check=scramble_check,
                                            timeout=30)
     except asyncio.TimeoutError:
-        await interaction.followup.send(
-            f'Time is up {interaction.user.mention}! You took too long to answer. The correct word was: **{word}**.'
-        )
+        await interaction.followup.send(embed = discord.Embed(
+            title="Time's Up!",
+            description=f"You took too long to unscramble the word. The word was: `{word}`!"
+        ))
         return
 
     if user_guess.content.lower() == word:
-        await interaction.followup.send(
-            f'Congratulations {interaction.user.mention}! You guessed the word correctly.'
-        )
+        await interaction.followup.send(embed = discord.Embed(
+            title="You Win!",
+            description=f"Congratulations! You unscrambled the word correctly. The word was: `{word}`!"
+        ))
     else:
-        await interaction.followup.send(
-            f'Sorry {interaction.user.mention}, the correct word was: **{word}**.'
-        )
+        await interaction.followup.send(embed = discord.Embed(
+            title="You Lose!",
+            description=f"Sorry, that's not the correct word. The word was: `{word}`!"
+        ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2052,11 +2212,17 @@ async def scramble(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2092,7 +2258,10 @@ async def trivia(interaction: discord.Interaction):
     save_data(data)
 
     question = random.choice(trivia_questions)
-    await interaction.response.send_message(question["question"])
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Trivia Question!",
+        description=f"The Question is: `{question['question']}`!"
+    ))
 
     def check(msg):
         return msg.author == interaction.user and msg.channel == interaction.channel
@@ -2100,20 +2269,25 @@ async def trivia(interaction: discord.Interaction):
     try:
         answer = await client.wait_for('message', timeout=30, check=check)
     except asyncio.TimeoutError:
-        await interaction.followup.send(
-            'Time\'s up! The correct answer was: {}'.format(question["answer"])
-        )
+        await interaction.followup.send(embed = discord.Embed(
+            title="Time's Up!",
+            description=f"You took too long to answer the question. The answer was: `{question['answer']}`!"
+        ))
     else:
         if answer.content.lower() == question["answer"].lower():
-            await interaction.followup.send('Correct!')
+            await interaction.followup.send(embed = discord.Embed(
+                title="Correct!",
+                description=f"Congratulations! You answered correctly. The answer was: `{question['answer']}`!"
+            ))
 
             data[player]['correct_trivia_answers'] += 1
             save_data(data)
 
         else:
-            await interaction.followup.send(
-                'Incorrect! The correct answer was: {}'.format(
-                    question["answer"]))
+            await interaction.followup.send(embed = discord.Embed(
+                title="Incorrect!",
+                description=f"Sorry, that's not the correct answer. The answer was: `{question['answer']}`!"
+            ))
 
             data[player]['wrong_trivia_answers'] += 1
             save_data(data)
@@ -2124,11 +2298,17 @@ async def trivia(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2164,7 +2344,10 @@ async def riddle(interaction: discord.Interaction):
     save_data(data)
 
     question = random.choice(riddle_questions)
-    await interaction.response.send_message(question["question"])
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Riddle!",
+        description=f"The Riddle is: `{question['question']}`!"
+    ))
 
     def check(msg):
         return msg.author == interaction.user and msg.channel == interaction.channel
@@ -2172,16 +2355,21 @@ async def riddle(interaction: discord.Interaction):
     try:
         answer = await client.wait_for('message', timeout=30, check=check)
     except asyncio.TimeoutError:
-        await interaction.followup.send(
-            'Time\'s up! The correct answer was: {}'.format(question["answer"])
-        )
+        await interaction.followup.send(embed = discord.Embed(
+            title="Time's Up!",
+            description=f"You took too long to answer the riddle. The answer was: `{question['answer']}`!"
+        ))
     else:
         if answer.content.lower() == question["answer"].lower():
-            await interaction.followup.send('Correct!')
+            await interaction.followup.send(embed = discord.Embed(
+                title="Correct!",
+                description=f"Congratulations! You answered correctly. The answer was: `{question['answer']}`!"
+            ))
         else:
-            await interaction.followup.send(
-                'Incorrect! The correct answer was: {}'.format(
-                    question["answer"]))
+            await interaction.followup.send(embed = discord.Embed(
+                title="Incorrect!",
+                description=f"Sorry, that's not the correct answer. The answer was: `{question['answer']}`!"
+            ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2189,11 +2377,17 @@ async def riddle(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2229,8 +2423,10 @@ async def ball(interaction: discord.Interaction, question: str):
     save_data(data)
 
     response = random.choice(eight_ball_responses)
-    await interaction.response.send_message(
-        f'Question: {question}\nAnswer: {response}')
+    await interaction.response.send_message(embed = discord.Embed(
+        title="8Ball!",
+        description=f"You asked: `{question}`\nThe Bot's Answer is: `{response}`"
+    ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2238,11 +2434,17 @@ async def ball(interaction: discord.Interaction, question: str):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2287,9 +2489,15 @@ async def truthordare(interaction: discord.Interaction, choice: str):
         return
 
     if choice == 'truth':
-        await interaction.response.send_message(random.choice(truths))
+        await interaction.response.send_message(embed = discord.Embed(
+            title="Truth!",
+            description=f"Truth Question: `{random.choice(truths)}`"
+        ))
     elif choice == 'dare':
-        await interaction.response.send_message(random.choice(dares))
+        await interaction.response.send_message(embed = discord.Embed(
+            title="Dare!",
+            description=f"Dare: `{random.choice(dares)}`"
+        ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2297,11 +2505,17 @@ async def truthordare(interaction: discord.Interaction, choice: str):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2333,11 +2547,14 @@ async def fact(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
-    data[player]['fact_cmds_executed'] += 1
+    data[player]['fact_cmds_executed:'] += 1
     save_data(data)
 
     fact = random.choice(facts)
-    await interaction.response.send_message(fact)
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Here's an Random Fact!",
+        description=f"Fact: `{fact}`"
+    ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2345,11 +2562,17 @@ async def fact(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2381,11 +2604,14 @@ async def jokes(interaction: discord.Interaction):
             'thisorthat_cmds_executed': 0
         }
     data[player]['commands_executed'] += 1
-    data[player]['jokes_cmds_executed'] += 1
+    data[player]['jokes_cmds-executed'] += 1
     save_data(data)
 
     joke = random.choice(joke_)
-    await interaction.response.send_message(joke)
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Here's an Random Joke!",
+        description=f"Joke: `{joke}`"
+    ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2393,11 +2619,17 @@ async def jokes(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2435,7 +2667,10 @@ async def quote(interaction: discord.Interaction):
     # Choose a Random Qoute
     quote = random.choice(quotes)
     # Send the Quote
-    await interaction.response.send_message(quote)
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Here's an Random Quote!",
+        description=f"Quote: `{quote}`"
+    ))
 
     button2 = Button(
         label="Invite Bot",
@@ -2443,11 +2678,17 @@ async def quote(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2491,14 +2732,9 @@ async def wyr(interaction: discord.Interaction):
     embedwyr = discord.Embed(title="**Would You Rather**")
     embedwyr.add_field(name="Option 1", value=question[0], inline=False)
     embedwyr.add_field(name="Option 2", value=question[1], inline=False)
-    embedwyr.set_footer(text="React with 🅰️ for Option 1 or 🅱️ for Option 2")
 
     # Send the message and capture the sent message object
     message = await interaction.response.send_message(embed=embedwyr)
-
-    # Add reactions to the message
-    await message.add_reaction("🅰️")
-    await message.add_reaction("🅱️")
 
     button2 = Button(
         label="Invite Bot",
@@ -2506,11 +2742,17 @@ async def wyr(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
@@ -2547,13 +2789,9 @@ async def tort(interaction: discord.Interaction):
     save_data(data)
 
     question = random.choice(questions_tort)
-    embed = discord.Embed(title="This or That", description=question[0])
+    embed = discord.Embed(title="This or That", description=f"{random.choice(questions_tort)}")
 
     message = await interaction.response.send_message(embed=embed)
-
-    # Adding reactions for choices
-    await message.add_reaction("1️⃣")
-    await message.add_reaction("2️⃣")
 
     button2 = Button(
         label="Invite Bot",
@@ -2561,40 +2799,59 @@ async def tort(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
+  
+    
+    button3 = Button(label="Vote",
+                         url="https://top.gg/bot/1226467038113828884")
+    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
+        view.add_item(button3)
         await interaction.followup.send(
-            "Dont forget to **Invite the Bot to your server**!",
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
             view=view,
             ephemeral=True)
 
+
 copypastestopwatch = {}
 
+
 # Copy Paste Slash Command
-@client.tree.command(name='copypaste',
-                    description='Copy & Paste a random sentence while trying to get the best time.')
+@client.tree.command(
+    name='copypaste',
+    description=
+    'Copy & Paste a random sentence while trying to get the best time.')
 async def copypaste(interaction: discord.Interaction):
     print("Copy Paste Game Command Executed by " + str(interaction.user))
     user_id = interaction.user
     sentence = random.choice(sentences)
-    await interaction.response.send_message(f"Copy Paste this Sentence in Chat as fast as you can: \n {sentence}")
+    await interaction.response.send_message(embed = discord.Embed(
+        title="Copy Paste!",
+        description=f"Type the following sentence as fast as you can:\n`{sentence}`"
+    ))
     copypastestopwatch[user_id] = time.time()
 
     def copypaste_check(msg):
         return msg.author == interaction.user and msg.channel == interaction.channel
 
     answer = await client.wait_for('message',
-                                  check=copypaste_check,
-                                  timeout=30)
+                                   check=copypaste_check,
+                                   timeout=30)
     answer = str(answer.content)
 
     if answer == sentence:
         start_time = copypastestopwatch.pop(user_id)
         elapsed_time = time.time() - start_time
-        await interaction.followup.send(f"You got it right in {elapsed_time} sec.")
+        await interaction.followup.send(embed = discord.Embed(
+            title="You got it right!",
+            description=f"in {elapsed_time:.3f} seconds"
+        ))
     else:
-        await interaction.followup.send("Nope.")
+        await interaction.followup.send(embed = discord.Embed(
+            title="Wrong!",
+            description=f"The sentence you copied was wrong! The Sentence was: `{sentence}`"
+        ))
 
 
 # Invite Slash Command
@@ -2606,6 +2863,7 @@ async def invite(interaction: discord.Interaction):
     await interaction.response.send_message(
         f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
+
 
 # ------------------------ TOKEN ------------------------ #
 
