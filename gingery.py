@@ -12,6 +12,7 @@ from random import randrange
 import time
 import asyncio
 import json
+import mysql.connector
 
 # ------------------------ SETUP ------------------------ #
 
@@ -51,6 +52,13 @@ async def on_ready():
                                      type=discord.ActivityType.playing,
                                      name=f"with {total_members} People"))
 
+mydb = mysql.connector.connect(
+  host="mysql.db.bot-hosting.net:3306",
+  user="u97085_nIKsWdwzDo",
+  password="0H7.LE+^dAABaUjFSrvctqHr",
+)
+
+print(mydb)
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
