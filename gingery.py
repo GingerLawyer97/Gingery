@@ -62,12 +62,20 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-mycursor.execute("SHOW DATABASES")
-
 mycursor.execute("CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))")
 
-for x in mycursor:
+mycursor.execute("SHOW TABLES")
+
+for x in mycursor.fetchall():
   print(x)
+
+sql = "INSERT INTO users (username) VALUES (%s)"
+val = ("gingerlawyer97")
+mycursor.execute(sql, val)
+
+mydb.commit()
+
+print(mycursor.rowcount, "record inserted.")
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
