@@ -62,7 +62,12 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-mycursor.execute("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255)")
+mycursor.execute("SHOW DATABASES")
+
+mycursor.execute("CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))")
+
+for x in mycursor:
+  print(x)
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
