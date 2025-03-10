@@ -53,12 +53,16 @@ async def on_ready():
                                      name=f"with {total_members} People"))
 
 mydb = mysql.connector.connect(
-  host="mysql.db.bot-hosting.net:3306",
+  host="mysql.db.bot-hosting.net",
+  port="3306",
   user="u97085_nIKsWdwzDo",
   password="0H7.LE+^dAABaUjFSrvctqHr",
+  database="s97085_Stats"
 )
 
-print(mydb)
+mycursor = mydb.cursor()
+
+mycursor.execute("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255)")
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
