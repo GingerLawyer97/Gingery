@@ -787,6 +787,9 @@ async def on_message(message):
                     value=
                     "- Copy & Paste a random sentence while trying to get the best time.",
                     inline=False)
+                embedvar3.add_field(name="`.stats`",
+                                    value="- Shows your Statistics.",
+                                    inline=False)
                 embedvar3.add_field(name="`.invite`",
                                     value="- Invite the Bot to your Server.",
                                     inline=False)
@@ -1547,6 +1550,24 @@ async def on_message(message):
             f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
         )
 
+    # Statistics Command
+    if message.content.startswith('.stats'):
+        print("Stats Command Executed by " + str(message.author))
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        stats = cursor.fetchone()
+        totalCommands = stats[1]
+        if stats:
+            embedvar = discord.Embed(
+                title="Statistics",
+                description=
+                f"**Total Commands Executed by {message.author}:** `{totalCommands}`"
+            )
+            await message.channel.send(embed=embedvar)
+        else:
+            await message.channel.send(
+                f"**You have not executed any commands yet. (The Statistics command is not counted as a command.)**"
+            )
+
 # ------------------------ ADMIN ONLY COMMANDS ------------------------ #
 
 # List of allowed server IDs
@@ -1722,6 +1743,9 @@ async def help(interaction: discord.Interaction, page: str):
             name="`.copypaste`",
             value=
             "- Copy & Paste a random sentence while trying to get the best time.",
+            inline=False)
+        embedvar3.add_field(name="`.stats`",
+            value="- Shows your Statistics.",
             inline=False)
         embedvar3.add_field(name="`.invite`",
                             value="- Invite the Bot to your Server.",
@@ -2597,6 +2621,23 @@ async def invite(interaction: discord.Interaction):
     await interaction.response.send_message(
         f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
+
+# Stats Slash Command
+@client.tree.command(name='stats', description='Shows your statistics.')
+async def stats(interaction: discord.Interaction):
+    print("Stats Command Executed by " + str(interaction.user))
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    stats = cursor.fetchone()
+    totalCommands = stats[1]
+    if stats:
+        embedvar = discord.Embed(
+            title="Statistics",
+            description=
+            f"**Total Commands Executed by {interaction.user}:** `{totalCommands}`"
+        )
+        await interaction.response.send_message(embed=embedvar)
+    else:
+        await interaction.response.send_message("**You have not executed any commands yet. (The Statistics command is not counted as a command.)**")
 
 # ------------------------ TOKEN ------------------------ #
 
