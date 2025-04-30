@@ -13,7 +13,6 @@ import time
 import asyncio
 import json
 import mysql.connector
-
 # ------------------------ SETUP ------------------------ #
 
 # Define the path to the JSON file for storing player data
@@ -29,6 +28,18 @@ client = commands.Bot(command_prefix=['.'], intents=intents)
 
 # ------------------------ STARTUP ------------------------ #
 
+# Database Connection
+username = os.environ['dbUser']
+password = os.environ['dbPass']
+
+database = mysql.connector.connect(
+    host="sql7.freesqldatabase.com",
+    user=username,
+    password=password,
+    database="sql7776001"
+)
+
+cursor = database.cursor()
 
 @client.event
 async def on_ready():
@@ -51,31 +62,6 @@ async def on_ready():
                                  activity=discord.Activity(
                                      type=discord.ActivityType.playing,
                                      name=f"with {total_members} People"))
-
-mydb = mysql.connector.connect(
-  host="mysql.db.bot-hosting.net",
-  port="3306",
-  user="u97085_nIKsWdwzDo",
-  password="0H7.LE+^dAABaUjFSrvctqHr",
-  database="s97085_Stats"
-)
-
-mycursor = mydb.cursor()
-
-mycursor.execute("CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))")
-
-mycursor.execute("SHOW TABLES")
-
-for x in mycursor.fetchall():
-  print(x)
-
-sql = "INSERT INTO users (username) VALUES (%s)"
-val = ("gingerlawyer97")
-mycursor.execute(sql, val)
-
-mydb.commit()
-
-print(mycursor.rowcount, "record inserted.")
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
@@ -626,6 +612,19 @@ async def on_message(message):
     if message.content.startswith('.about'):
         print("About Command Executed by " + str(message.author))
 
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
+
         embedvar = discord.Embed(
             title="About Gingery",
             description=
@@ -658,6 +657,19 @@ async def on_message(message):
     # Help Command
     if message.content.startswith('.help'):
         print("Help Command Executed by " + str(message.author))
+
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         if message.content == '.help':
             embedvar = discord.Embed(
@@ -784,32 +796,20 @@ async def on_message(message):
     # Roll a Dice Command
     if message.content.startswith('.rolladice'):
         print("Rolladice Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['rolladice_cmds_executed'] += 1
-        save_data(data)
-
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
+        
+        database.commit()
         radnum = randrange(1, 7)
         embedrolladice = discord.Embed(
             title=f"{message.author} rolled a Dice!",
@@ -835,31 +835,18 @@ async def on_message(message):
     # Coin Flip Command
     if message.content.startswith('.coinflip'):
         print("Coinflip Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['coinflip_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         coinflip = randrange(1, 3)
         if coinflip == 1:
@@ -892,31 +879,19 @@ async def on_message(message):
     # Rock Paper Scissors Command
     if message.content.startswith('.rps'):
         print("RPS Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
 
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['rps_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         if message.content == '.rps':
             await message.channel.send(embed=discord.Embed(
@@ -979,31 +954,18 @@ async def on_message(message):
     # HighLow Command
     if message.content.startswith('.highlow'):
         print("HighLow Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['highlow_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         number = random.randint(
             1, 100)  # Generate a random number between 1 and 100
@@ -1071,31 +1033,18 @@ async def on_message(message):
     # Word Scramble Command
     if message.content.startswith('.scramble'):
         print("Scramble Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['scramble_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         word = random.choice(WORDS)
         scrambled_word = ''.join(random.sample(word, len(word)))
@@ -1135,31 +1084,18 @@ async def on_message(message):
     # Trivia Game Command
     if message.content.startswith('.trivia'):
         print("Trivia Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['trivia_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         question = random.choice(trivia_questions)
         await message.channel.send(embed=discord.Embed(
@@ -1185,15 +1121,6 @@ async def on_message(message):
                     f"Congratulations! You answered correctly.\nThe correct answer was: `{question['answer']}`"
                 ))
 
-                # Save Stats to Json File
-                if player not in data:
-                    data[player] = {
-                        'correct_trivia_answers': 0,
-                        'wrong_trivia_answers': 0
-                    }
-                data[player]['correct_trivia_answers'] += 1
-                save_data(data)
-
             else:
                 await message.channel.send(embed=discord.Embed(
                     title="Incorrect!",
@@ -1201,43 +1128,21 @@ async def on_message(message):
                     f"Sorry, that's incorrect.\nThe correct answer was: `{question['answer']}`"
                 ))
 
-                # Save Stats to Json File
-                if player not in data:
-                    data[player] = {
-                        'correct_trivia_answers': 0,
-                        'wrong_trivia_answers': 0
-                    }
-                data[player]['wrong_trivia_answers'] += 1
-                save_data(data)
-
     # Riddle Command
     if message.content.startswith('.riddle'):
         print("Riddle Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['riddle_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         question = random.choice(riddle_questions)
         await message.channel.send(embed=discord.Embed(
@@ -1288,31 +1193,18 @@ async def on_message(message):
     # 8-Ball Command
     if message.content.startswith('.8ball'):
         print("8ball Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['eightball_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         if message.content == '.8ball':
             await message.channel.send(
@@ -1345,31 +1237,18 @@ async def on_message(message):
     # Truth or Dare Command
     if message.content.startswith('.td'):
         print("TD Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['truthordare_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         if message.content == '.td':
             await message.channel.send(
@@ -1413,31 +1292,18 @@ async def on_message(message):
     # Fact Command
     if message.content.startswith('.fact'):
         print("Fact Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['fact_cmds_executed:'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         fact = random.choice(facts)
         await message.channel.send(embed=discord.Embed(
@@ -1462,31 +1328,18 @@ async def on_message(message):
     # Jokes Command
     if message.content.startswith('.joke'):
         print(f"Joke Command Executed by {message.author}")
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['jokes_cmds-executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         joke = random.choice(joke_)
         await message.channel.send(embed=discord.Embed(
@@ -1511,31 +1364,18 @@ async def on_message(message):
     # Quote Command
     if message.content.startswith('.quote'):
         print("Quote Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['quote_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         # Choose a Random Qoute
         quote = random.choice(quotes)
@@ -1562,31 +1402,18 @@ async def on_message(message):
     # Would you Rather Command
     if message.content.startswith('.wyr'):
         print("Would You Rather Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['wouldyourather_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         # Choose a random question
         question = random.choice(questions_wyr)
@@ -1618,31 +1445,18 @@ async def on_message(message):
     # This or That Command
     if message.content.startswith('.tort'):
         print(f"This or That Command Executed by " + str(message.author))
-        data = load_data()
-        player = str(message.author)
-
-        # Save stats to Json File
-        if player not in data:
-            data[player] = {
-                'commands_executed': 0,
-                'rolladice_cmds_executed': 0,
-                'eightball_cmds_executed': 0,
-                'coinflip_cmds_executed': 0,
-                'rps_cmds_executed': 0,
-                'highlow_cmds_executed': 0,
-                'scramble_cmds_executed': 0,
-                'trivia_cmds_executed': 0,
-                'riddle_cmds_executed': 0,
-                'truthordare_cmds_executed': 0,
-                'fact_cmds_executed:': 0,
-                'jokes_cmds-executed': 0,
-                'quote_cmds_executed': 0,
-                'wouldyourather_cmds_executed': 0,
-                'thisorthat_cmds_executed': 0
-            }
-        data[player]['commands_executed'] += 1
-        data[player]['thisorthat_cmds_executed'] += 1
-        save_data(data)
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         question = random.choice(questions_tort)
         embed = discord.Embed(title="This or That", description=question)
@@ -1669,6 +1483,20 @@ async def on_message(message):
     # Copy Paste Game Command
     if message.content.startswith('.copypaste'):
         print("Copy Paste Game Command Executed by " + str(message.author))
+        
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
+            
         user_id = message.author
         sentence = random.choice(sentences)
         copypastestopwatch[user_id] = time.time()
@@ -1701,6 +1529,19 @@ async def on_message(message):
     # Invite Command
     if message.content.startswith('.invite'):
         print("Invite Command Executed by " + str(message.author))
+
+        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
+        result = cursor.fetchone()
+        if result:
+            print(f"Record already exists for {message.author}.")
+            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
+            database.commit()
+        else:
+            # Insert new record
+            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+            cursor.execute(insert_sql, (str(message.author), 0))
+            database.commit()
+            print("New record inserted.")
 
         await message.channel.send(
             f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
@@ -1736,16 +1577,6 @@ async def on_message(message):
         else:
             await message.channel.send('Restricted command.')
 
-    #ADMIN: Server List Command
-    if message.content.startswith('.admin:serverlist'):
-        if is_allowed_guild(message):
-            for guild in client.guilds:
-                await message.channel.send(f"Server: {guild.name}")
-
-        else:
-            await message.channel.send('Restricted command.')
-
-
 # ------------------------ SLASH COMMANDS ------------------------ #
 
 
@@ -1753,6 +1584,19 @@ async def on_message(message):
 @client.tree.command(name='about', description='Description about the bot.')
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
+
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     embedvar = discord.Embed(
         title="About Gingery",
@@ -1789,6 +1633,19 @@ async def about(interaction: discord.Interaction):
 @client.tree.command(name='help', description='List of commands.')
 async def help(interaction: discord.Interaction, page: str):
     print("Help Command Executed by " + str(interaction.user))
+
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     choices = ['1', '2', '3']
 
@@ -1877,31 +1734,19 @@ async def help(interaction: discord.Interaction, page: str):
 @client.tree.command(name='rolladice', description='Roll a dice.')
 async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['rolladice_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     radnum = randrange(1, 7)
     await interaction.response.send_message(embed = discord.Embed(
@@ -1915,7 +1760,6 @@ async def rolladice(interaction: discord.Interaction):
         "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
     )
 
-  
     
     button3 = Button(label="Vote",
                          url="https://top.gg/bot/1226467038113828884")
@@ -1934,32 +1778,20 @@ async def rolladice(interaction: discord.Interaction):
 @client.tree.command(name='coinflip', description='Flips a Coin.')
 async def coinflip(interaction: discord.Interaction):
     print("Coinflip Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['coinflip_cmds_executed'] += 1
-    save_data(data)
-
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
+    
     coinflip = randrange(-1, 2)
     if coinflip == 1:
         await interaction.response.send_message(embed = discord.Embed(
@@ -1998,31 +1830,19 @@ async def coinflip(interaction: discord.Interaction):
                      description='Play Rock Paper Scissors with the Bot.')
 async def rps(interaction: discord.Interaction, choice: str):
     print("RPS Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['rps_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     choices = ['rock', 'paper', 'scissors']
 
@@ -2077,31 +1897,19 @@ async def rps(interaction: discord.Interaction, choice: str):
 @client.tree.command(name='highlow', description='Play High Low with the Bot.')
 async def highlow(interaction: discord.Interaction):
     print("HighLow Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['highlow_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     number = random.randint(1,
                             100)  # Generate a random number between 1 and 100
@@ -2173,31 +1981,19 @@ async def highlow(interaction: discord.Interaction):
                      description='The Bot gives you a Word to Unscramble.')
 async def scramble(interaction: discord.Interaction):
     print("Scramble Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['scramble_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     word = random.choice(WORDS)
     scrambled_word = ''.join(random.sample(word, len(word)))
@@ -2256,31 +2052,19 @@ async def scramble(interaction: discord.Interaction):
 @client.tree.command(name='trivia', description='The Bots asks you a question')
 async def trivia(interaction: discord.Interaction):
     print("Trivia Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['trivia_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     question = random.choice(trivia_questions)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2304,18 +2088,12 @@ async def trivia(interaction: discord.Interaction):
                 title="Correct!",
                 description=f"Congratulations! You answered correctly. The answer was: `{question['answer']}`!"
             ))
-
-            data[player]['correct_trivia_answers'] += 1
-            save_data(data)
-
+            
         else:
             await interaction.followup.send(embed = discord.Embed(
                 title="Incorrect!",
                 description=f"Sorry, that's not the correct answer. The answer was: `{question['answer']}`!"
             ))
-
-            data[player]['wrong_trivia_answers'] += 1
-            save_data(data)
 
     button2 = Button(
         label="Invite Bot",
@@ -2342,31 +2120,19 @@ async def trivia(interaction: discord.Interaction):
 @client.tree.command(name='riddle', description='The Bot asks you a Riddle.')
 async def riddle(interaction: discord.Interaction):
     print("Riddle Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['riddle_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     question = random.choice(riddle_questions)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2421,31 +2187,19 @@ async def riddle(interaction: discord.Interaction):
 @client.tree.command(name='8ball', description='Ask the Bot a Question.')
 async def ball(interaction: discord.Interaction, question: str):
     print("8ball Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['eightball_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     response = random.choice(eight_ball_responses)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2479,31 +2233,19 @@ async def ball(interaction: discord.Interaction, question: str):
                      description='The Bot gives you a Truth or a Dare.')
 async def truthordare(interaction: discord.Interaction, choice: str):
     print("TD Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['truthordare_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     choices = ['truth', 'dare']
 
@@ -2549,31 +2291,19 @@ async def truthordare(interaction: discord.Interaction, choice: str):
 @client.tree.command(name='fact', description='The Bot tells you a Fact.')
 async def fact(interaction: discord.Interaction):
     print("Fact Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['fact_cmds_executed:'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     fact = random.choice(facts)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2606,31 +2336,19 @@ async def fact(interaction: discord.Interaction):
 @client.tree.command(name='joke', description='The Bot tells you a Joke.')
 async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['jokes_cmds-executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     joke = random.choice(joke_)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2663,31 +2381,19 @@ async def jokes(interaction: discord.Interaction):
 @client.tree.command(name='quote', description='The Bot tells you a Quote.')
 async def quote(interaction: discord.Interaction):
     print("Quote Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['quote_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     # Choose a Random Qoute
     quote = random.choice(quotes)
@@ -2724,31 +2430,19 @@ async def quote(interaction: discord.Interaction):
     description='The Bot asks you a Would You Rather Question.')
 async def wyr(interaction: discord.Interaction):
     print("Would You Rather Command Executed by " + str(interaction.user))
-    data = load_data()
-    player = str(interaction.user)
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['wouldyourather_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     # Choose a random question
     question = random.choice(questions_wyr)
@@ -2786,32 +2480,20 @@ async def wyr(interaction: discord.Interaction):
 @client.tree.command(name='thisorthat',
                      description='The Bot asks you a This or That Question.')
 async def tort(interaction: discord.Interaction):
-    print(f"This or hat Command Executed by {interaction.user}")
-    data = load_data()
-    player = str(interaction.user)
+    print(f"This or that Command Executed by {interaction.user}")
 
-    # Save stats to Json File
-    if player not in data:
-        data[player] = {
-            'commands_executed': 0,
-            'rolladice_cmds_executed': 0,
-            'eightball_cmds_executed': 0,
-            'coinflip_cmds_executed': 0,
-            'rps_cmds_executed': 0,
-            'highlow_cmds_executed': 0,
-            'scramble_cmds_executed': 0,
-            'trivia_cmds_executed': 0,
-            'riddle_cmds_executed': 0,
-            'truthordare_cmds_executed': 0,
-            'fact_cmds_executed:': 0,
-            'jokes_cmds-executed': 0,
-            'quote_cmds_executed': 0,
-            'wouldyourather_cmds_executed': 0,
-            'thisorthat_cmds_executed': 0
-        }
-    data[player]['commands_executed'] += 1
-    data[player]['thisorthat_cmds_executed'] += 1
-    save_data(data)
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     question = random.choice(questions_tort)
     embed = discord.Embed(title="This or That", description=f"{random.choice(questions_tort)}")
@@ -2849,6 +2531,20 @@ copypastestopwatch = {}
     'Copy & Paste a random sentence while trying to get the best time.')
 async def copypaste(interaction: discord.Interaction):
     print("Copy Paste Game Command Executed by " + str(interaction.user))
+
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
+        
     user_id = interaction.user
     sentence = random.choice(sentences)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2884,6 +2580,19 @@ async def copypaste(interaction: discord.Interaction):
                      description='Invite the Bot to your server')
 async def invite(interaction: discord.Interaction):
     print("Invite Command Executed by " + str(interaction.user))
+
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {interaction.user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
+        database.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(interaction.user), 0))
+        database.commit()
+        print("New record inserted.")
 
     await interaction.response.send_message(
         f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
