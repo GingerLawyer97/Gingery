@@ -13,6 +13,7 @@ import time
 import asyncio
 import json
 import mysql.connector
+from dotenv import load_dotenv
 # ------------------------ SETUP ------------------------ #
 
 # Define the path to the JSON file for storing player data
@@ -27,6 +28,8 @@ intents.members = True
 client = commands.Bot(command_prefix=['.'], intents=intents)
 
 # ------------------------ STARTUP ------------------------ #
+
+load_dotenv()
 
 # Database Connection
 username = os.environ['dbUser']
