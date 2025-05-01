@@ -33,10 +33,10 @@ username = os.environ['dbUser']
 password = os.environ['dbPass']
 
 database = mysql.connector.connect(
-    host="sql7.freesqldatabase.com",
+    host="mysql.db.bot-hosting.net",
     user=username,
     password=password,
-    database="sql7776001"
+    database="s97085_Statistics"
 )
 
 cursor = database.cursor()
