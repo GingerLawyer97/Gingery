@@ -22,7 +22,6 @@ DATA_FILE = 'stats.json'
 # Intents of the Bot
 intents = discord.Intents.default()
 intents.message_content = True
-intents.members = True
 
 # Bot Instance
 client = commands.Bot(command_prefix=['.'], intents=intents)
@@ -51,20 +50,17 @@ async def on_ready():
     # Sync Slash Commands
     await client.tree.sync()
 
-    total_members = 0
     total_servers = 0
 
     for guild in client.guilds:
-        total_members += len(guild.members)
         total_servers += 1
 
     print(f"Total Servers: {total_servers}")
-    print(f"Total Members: {total_members}")
     # Status of the Bot
     await client.change_presence(status=discord.Status.idle,
                                  activity=discord.Activity(
                                      type=discord.ActivityType.playing,
-                                     name=f"with {total_members} People"))
+                                     name=f"in {total_servers} Servers"))
 
 # ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
 
@@ -649,11 +645,15 @@ async def on_message(message):
         button3 = Button(label="Vote",
                          url="https://top.gg/bot/1226467038113828884")
 
+        button4 = Button(label="Website",
+                         url="https://gingerybot.carrd.co/")
+
         # Create a view and add the buttons to it
         view = View()
         view.add_item(button1)
         view.add_item(button2)
         view.add_item(button3)
+        view.add_item(button4)
 
         await message.channel.send(embed=embedvar, view=view)
 
@@ -1583,20 +1583,18 @@ async def on_message(message):
     # ADMIN: Update Status Command
     if message.content.startswith('.admin:updatestatus'):
         if is_allowed_guild(message):
-            total_members = 0
             total_servers = 0
-
+            
             for guild in client.guilds:
-                total_members += len(guild.members)
                 total_servers += 1
 
             await message.channel.send(f"Total Servers: {total_servers}")
-            await message.channel.send(f"Total Members: {total_members}")
+            
             # Status of the Bot
             await client.change_presence(
                 status=discord.Status.idle,
                 activity=discord.Activity(type=discord.ActivityType.playing,
-                                          name=f"with {total_members} People"))
+                                          name=f"in {total_servers} Servers"))
             await message.channel.send('Updated Status!')
         else:
             await message.channel.send('Restricted command.')
