@@ -1,3 +1,7 @@
+# GINGERY DISCORD BOT
+# Made by @GingerLawyer97
+version = '0.2.4'
+#
 # ------------------------ LIBRARIES ------------------------ #
 
 import os
@@ -14,10 +18,8 @@ import asyncio
 import json
 import mysql.connector
 from dotenv import load_dotenv
-# ------------------------ SETUP ------------------------ #
 
-# Define the path to the JSON file for storing player data
-DATA_FILE = 'stats.json'
+# ------------------------ SETUP ------------------------ #
 
 # Intents of the Bot
 intents = discord.Intents.default()
@@ -34,14 +36,14 @@ load_dotenv()
 username = os.environ['dbUser']
 password = os.environ['dbPass']
 
-database = mysql.connector.connect(
+db = mysql.connector.connect(
     host="mysql.db.bot-hosting.net",
     user=username,
     password=password,
     database="s97085_Statistics"
 )
 
-cursor = database.cursor()
+cursor = db.cursor()
 
 @client.event
 async def on_ready():
@@ -62,7 +64,7 @@ async def on_ready():
                                      type=discord.ActivityType.playing,
                                      name=f"in {total_servers} Servers"))
 
-# ------------------------ LISTS/VARIABLES/PREDEFINED FUNCTIONS ------------------------ #
+# ------- LISTS/VARIABLES/PREDEFINED FUNCTIONS ------- #
 
 trivia_questions = [{
     "question": "What is the capital of France?",
@@ -286,8 +288,7 @@ riddle_questions = [{
 WORDS = [
     'python', 'discord', 'programming', 'bot', 'server', 'message', 'channel',
     'role', 'algorithm', 'array', 'attribute', 'boolean', 'byte', 'class',
-    'compiler', 'condition', 'constant', 'constructor', 'data', 'database',
-    'debug', 'default', 'development', 'dictionary', 'document', 'element',
+    'compiler', 'condition', 'constant', 'constructor', 'data', 'debug', 'default', 'development', 'dictionary', 'document', 'element',
     'encryption', 'exception', 'expression', 'file', 'framework', 'function',
     'hexadecimal', 'index', 'inheritance', 'input', 'integer', 'interface',
     'iteration', 'json', 'keyword', 'lambda', 'library', 'loop', 'method',
@@ -580,1024 +581,60 @@ sentences = [
     "Exemplifying resilience in adversity demonstrates remarkable fortitude."
 ]
 
-
-# Load player data from the JSON file
-def load_data():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, 'r') as f:
-            try:
-                return json.load(f)
-            except json.JSONDecodeError:
-                # Return an empty dictionary if the file is empty or malformed
-                return {}
-    return {}
-
-
-# Save player data to the JSON file
-def save_data(data):
-    with open(DATA_FILE, 'w') as f:
-        json.dump(data, f, indent=4)
-
-
-# ------------------------ TEXT COMMANDS ------------------------ #
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    # About Command
-    if message.content.startswith('.about'):
-        print("About Command Executed by " + str(message.author))
-
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        embedvar = discord.Embed(
-            title="About Gingery",
-            description=
-            ("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."
-             ))
-        embedvar.set_thumbnail(
-            url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-        embedvar.set_footer(text='Version 0.2.3')
-
-        # Create buttons
-        button1 = Button(label="Support Server",
-                         url="https://discord.gg/7sdx7PAtRh")
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        button4 = Button(label="Website",
-                         url="https://gingerybot.carrd.co/")
-
-        # Create a view and add the buttons to it
-        view = View()
-        view.add_item(button1)
-        view.add_item(button2)
-        view.add_item(button3)
-        view.add_item(button4)
-
-        await message.channel.send(embed=embedvar, view=view)
-
-    # Help Command
-    if message.content.startswith('.help'):
-        print("Help Command Executed by " + str(message.author))
-
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        if message.content == '.help':
-            embedvar = discord.Embed(
-                title="HELP", description="List of Commands to use the Bot:")
-            embedvar.add_field(name="`.about`",
-                               value="- Description About the Bot",
-                               inline=False)
-            embedvar.add_field(name="`.coinflip` OR `.cf`",
-                               value="- Flip's a Coin.",
-                               inline=False)
-            embedvar.add_field(name="`.rolladice` OR `.rad`",
-                               value="- Roll's a Dice.",
-                               inline=False)
-            embedvar.add_field(
-                name="`.rps <rock/paper/scissors>`",
-                value="- Plays Rock, Paper, Scissors with the Bot.",
-                inline=False)
-            embedvar.add_field(
-                name="`.highlow`",
-                value="- Plays a Number Guessing game with the Bot.",
-                inline=False)
-            embedvar.add_field(
-                name="`.scramble`",
-                value="- Plays a Word Scramble game with the Bot.",
-                inline=False)
-            embedvar.add_field(name="`.trivia`",
-                               value="- The Bot asks you a Question.",
-                               inline=False)
-            embedvar.set_footer(text="Page 1/3")
-            await message.channel.send(embed=embedvar)
-
-        else:
-            choices = ['1', '2', '3']
-            user_choice = message.content.split(
-                ' ')[1].lower()  # Extract user's choice
-
-            if user_choice not in choices:
-                await message.channel.send(
-                    f"Invalid Choice! Please choose an page number.\nExample: `.help 1`"
-                )
-                return
-
-            if user_choice == '1':
-                embedvar = discord.Embed(
-                    title="HELP",
-                    description="List of Commands to use the Bot:")
-                embedvar.add_field(name="`.about`",
-                                   value="- Description About the Bot",
-                                   inline=False)
-                embedvar.add_field(name="`.coinflip`",
-                                   value="- Flip's a Coin.",
-                                   inline=False)
-                embedvar.add_field(name="`.rolladice`",
-                                   value="- Roll's a Dice.",
-                                   inline=False)
-                embedvar.add_field(
-                    name="`.rps <rock/paper/scissors>`",
-                    value="- Plays Rock, Paper, Scissors with the Bot.",
-                    inline=False)
-                embedvar.add_field(
-                    name="`.highlow`",
-                    value="- Plays a Number Guessing game with the Bot.",
-                    inline=False)
-                embedvar.add_field(
-                    name="`.scramble`",
-                    value="- Plays a Word Scramble game with the Bot.",
-                    inline=False)
-                embedvar.add_field(name="`.trivia`",
-                                   value="- The Bot asks you a Question.",
-                                   inline=False)
-                embedvar.set_footer(text="Page 1/3")
-                await message.channel.send(embed=embedvar)
-
-            if user_choice == '2':
-                embedvar2 = discord.Embed(
-                    title="HELP",
-                    description="List of Commands to use the Bot:")
-                embedvar2.add_field(name="`.riddle`",
-                                    value="- The Bot asks you a Riddle.",
-                                    inline=False)
-                embedvar2.add_field(name="`.8ball <question>`",
-                                    value="- Ask the Bot a question.",
-                                    inline=False)
-                embedvar2.add_field(
-                    name="`.td <truth/dare>`",
-                    value="- The Bot asks you a Truth or Dare.",
-                    inline=False)
-                embedvar2.add_field(name="`.fact`",
-                                    value="- The Bot gives you a random Fact.",
-                                    inline=False)
-                embedvar2.add_field(name="`.joke`",
-                                    value="- The Bot tells you a random Joke.",
-                                    inline=False)
-                embedvar2.add_field(
-                    name="`.quote`",
-                    value="- The Bot gives you a random Quote.",
-                    inline=False)
-                embedvar2.add_field(
-                    name="`.wyr`",
-                    value="- The Bot asks you a Would You Rather Question.",
-                    inline=False)
-                embedvar2.set_footer(text="Page 2/3")
-                await message.channel.send(embed=embedvar2)
-
-            if user_choice == '3':
-                embedvar3 = discord.Embed(
-                    title="HELP",
-                    description="- List of Commands to use the Bot:")
-                embedvar3.add_field(
-                    name="`.tort`",
-                    value="- The Bot asks you a This or That Question.",
-                    inline=False)
-                embedvar3.add_field(
-                    name="`.copypaste`",
-                    value=
-                    "- Copy & Paste a random sentence while trying to get the best time.",
-                    inline=False)
-                embedvar3.add_field(name="`.stats`",
-                                    value="- Shows your Statistics.",
-                                    inline=False)
-                embedvar3.add_field(name="`.invite`",
-                                    value="- Invite the Bot to your Server.",
-                                    inline=False)
-                embedvar3.set_footer(text="Page 3/3")
-                await message.channel.send(embed=embedvar3)
-
-    # Roll a Dice Command
-    if message.content.startswith('.rolladice'):
-        print("Rolladice Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-        
-        database.commit()
-        radnum = randrange(1, 7)
-        embedrolladice = discord.Embed(
-            title=f"{message.author} rolled a Dice!",
-            description=f"The Dice rolled a **{radnum}**!")
-        await message.channel.send(embed=embedrolladice)
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Coin Flip Command
-    if message.content.startswith('.coinflip'):
-        print("Coinflip Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        coinflip = randrange(1, 3)
-        if coinflip == 1:
-            embedcoinflip = discord.Embed(
-                title=f"{message.author} flipped a Coin!",
-                description=f"The Coin landed on **Heads**!")
-            await message.channel.send(embed=embedcoinflip)
-        else:
-            embedcoinflip = discord.Embed(
-                title=f"{message.author} flipped a Coin!",
-                description=f"The Coin landed on **Tails**!")
-            await message.channel.send(embed=embedcoinflip)
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Rock Paper Scissors Command
-    if message.content.startswith('.rps'):
-        print("RPS Command Executed by " + str(message.author))
-
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        if message.content == '.rps':
-            await message.channel.send(embed=discord.Embed(
-                title="Invalid Command!",
-                description=
-                "Please use the command like this: `.rps <rock/paper/scissors>`",
-            ))
-            return
-        else:
-            choices = ['rock', 'paper', 'scissors']
-            user_choice = message.content.split(
-                ' ')[1].lower()  # Extract user's choice
-
-            if user_choice not in choices:
-                await message.channel.send(embed=discord.Embed(
-                    title="Invalid Choice!",
-                    description=
-                    "Please choose an valid choice: `rock/paper/scissors`",
-                ))
-                return
-
-            bot_choice = random.choice(choices)
-
-            if user_choice == bot_choice:
-                await message.channel.send(embed=discord.Embed(
-                    title="Tie!",
-                    description="Both players chose the same thing.",
-                ))
-            elif (user_choice == 'rock' and bot_choice == 'scissors') or \
-                (user_choice == 'paper' and bot_choice == 'rock') or \
-                (user_choice == 'scissors' and bot_choice == 'paper'):
-                await message.channel.send(embed=discord.Embed(
-                    title="You Win!",
-                    description=
-                    f"You chose {user_choice} and the Bot chose {bot_choice}.",
-                ))
-            else:
-                await message.channel.send(embed=discord.Embed(
-                    title="You Lose!",
-                    description=
-                    f"You chose {user_choice} and the Bot chose {bot_choice}.",
-                ))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # HighLow Command
-    if message.content.startswith('.highlow'):
-        print("HighLow Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        number = random.randint(
-            1, 100)  # Generate a random number between 1 and 100
-
-        await message.channel.send(embed=discord.Embed(
-            title="Guess the Number!",
-            description=
-            "I'm thinking of a number between 1 and 100. Guess the number!",
-        ))
-
-        def highlow_check(msg):
-            return msg.author == message.author and msg.channel == message.channel
-
-        # Allow the user to guess the number within 7 attempts
-        for _ in range(7):
-            try:
-                guess = await client.wait_for('message',
-                                              check=highlow_check,
-                                              timeout=30)
-                guess = int(guess.content)
-
-                if guess < number:
-                    await message.channel.send('Too low! Try again.')
-                elif guess > number:
-                    await message.channel.send('Too high! Try again.')
-                else:
-                    await message.channel.send(embed=discord.Embed(
-                        title="You Win!",
-                        description=
-                        f"Congratulations! You guessed the number!\nThe Number was: `{number}`.",
-                    ))
-                    return
-            except ValueError:
-                await message.channel.send(
-                    'Invalid input! Please enter a number.')
-            except asyncio.TimeoutError:
-                await message.channel.send(embed=discord.Embed(
-                    title="Time's Up!",
-                    description=
-                    f"You took too long to guess the number.\nThe  number was `{number}`.",
-                ))
-                return
-
-        await message.channel.send(embed=discord.Embed(
-            title="Game Over!",
-            description=f"You ran out of attempts.\nThe number was `{number}`.",
-        ))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Word Scramble Command
-    if message.content.startswith('.scramble'):
-        print("Scramble Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        word = random.choice(WORDS)
-        scrambled_word = ''.join(random.sample(word, len(word)))
-        await message.channel.send(embed=discord.Embed(
-            title="Unscramble the Word!",
-            description=f"Unscramble this word: `{scrambled_word}`",
-        ))
-
-        def scramble_check(m):
-            return m.author == message.author and m.channel == message.channel
-
-        try:
-            user_guess = await client.wait_for('message',
-                                               check=scramble_check,
-                                               timeout=30)
-        except asyncio.TimeoutError:
-            await message.channel.send(embed=discord.Embed(
-                title="Time's Up!",
-                description=
-                f"You took too long to unscramble the word.\nThe word was: `{word}`"
-            ))
-            return
-
-        if user_guess.content.lower() == word:
-            await message.channel.send(embed=discord.Embed(
-                title="You Win!",
-                description=
-                f"Congratulations! You unscrambled the word correctly.\nThe word was: `{word}`"
-            ))
-        else:
-            await message.channel.send(embed=discord.Embed(
-                title="You Lose!",
-                description=
-                f"Sorry, that's not the correct word.\nThe word was: `{word}`")
-                                       )
-
-    # Trivia Game Command
-    if message.content.startswith('.trivia'):
-        print("Trivia Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        question = random.choice(trivia_questions)
-        await message.channel.send(embed=discord.Embed(
-            title="Trivia",
-            description=f"Answer this question:\n`{question['question']}`"))
-
-        def check(msg):
-            return msg.author == message.author and msg.channel == message.channel
-
-        try:
-            answer = await client.wait_for('message', timeout=30, check=check)
-        except asyncio.TimeoutError:
-            await message.channel.send(embed=discord.Embed(
-                title="Time's Up!",
-                description=
-                f"You took too long to answer the question.\nThe correct answer was: `{question['answer']}`"
-            ))
-        else:
-            if answer.content.lower() == question["answer"].lower():
-                await message.channel.send(embed=discord.Embed(
-                    title="Correct!",
-                    description=
-                    f"Congratulations! You answered correctly.\nThe correct answer was: `{question['answer']}`"
-                ))
-
-            else:
-                await message.channel.send(embed=discord.Embed(
-                    title="Incorrect!",
-                    description=
-                    f"Sorry, that's incorrect.\nThe correct answer was: `{question['answer']}`"
-                ))
-
-    # Riddle Command
-    if message.content.startswith('.riddle'):
-        print("Riddle Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        question = random.choice(riddle_questions)
-        await message.channel.send(embed=discord.Embed(
-            title="Riddle",
-            description=f"Solve this riddle:\n`{question['question']}`"))
-
-        def check(msg):
-            return msg.author == message.author and msg.channel == message.channel
-
-        try:
-            answer = await client.wait_for('message', timeout=30, check=check)
-        except asyncio.TimeoutError:
-            await message.channel.send(embed=discord.Embed(
-                title="Time's Up!",
-                description=
-                f"You took too long to solve the riddle.\nThe correct answer was: `{question['answer']}`"
-            ))
-        else:
-            if answer.content.lower() == question["answer"].lower():
-                await message.channel.send(embed=discord.Embed(
-                    title="Correct!",
-                    description=
-                    f"Congratulations! You solved the riddle correctly.\nThe correct answer was: `{question['answer']}`"
-                ))
-            else:
-                await message.channel.send(embed=discord.Embed(
-                    title="Incorrect!",
-                    description=
-                    f"Sorry, that's incorrect.\nThe correct answer was: `{question['answer']}`"
-                ))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # 8-Ball Command
-    if message.content.startswith('.8ball'):
-        print("8ball Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        if message.content == '.8ball':
-            await message.channel.send(
-                f"Please ask a question.\nExample: `.8ball Is Gingery the best?`"
-            )
-            return
-        else:
-            response = random.choice(eight_ball_responses)
-            await message.channel.send(embed=discord.Embed(
-                title="8-Ball",
-                description=
-                f"Question: `{message.content[7:]}`\nAnswer: `{response}`"))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Truth or Dare Command
-    if message.content.startswith('.td'):
-        print("TD Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        if message.content == '.td':
-            await message.channel.send(
-                f"Invalid Choice! Please choose either truth or dare.\nExample: `.td truth`"
-            )
-            return
-        else:
-            choices = ['truth', 'dare']
-            user_choice = message.content.split(
-                ' ')[1].lower()  # Extract user's choice
-
-            if user_choice not in choices:
-                await message.channel.send(
-                    f"Invalid Choice! Please choose either truth or dare.\nExample: `.td truth`"
-                )
-                return
-
-            if user_choice == 'truth':
-                await message.channel.send(embed=discord.Embed(
-                    title="Truth", description=f"`{random.choice(truths)}`"))
-            elif user_choice == 'dare':
-                await message.channel.send(embed=discord.Embed(
-                    title="Dare", description=f"`{random.choice(dares)}`"))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Fact Command
-    if message.content.startswith('.fact'):
-        print("Fact Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        fact = random.choice(facts)
-        await message.channel.send(embed=discord.Embed(
-            title="Here's an Random Fact", description=f"`{fact}`"))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Jokes Command
-    if message.content.startswith('.joke'):
-        print(f"Joke Command Executed by {message.author}")
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        joke = random.choice(joke_)
-        await message.channel.send(embed=discord.Embed(
-            title="Here's an Random Joke", description=f"`{joke}`"))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Quote Command
-    if message.content.startswith('.quote'):
-        print("Quote Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        # Choose a Random Qoute
-        quote = random.choice(quotes)
-        # Send the Quote
-        await message.channel.send(embed=discord.Embed(
-            title="Here's an Interesting Quote", description=f"`{quote}`"))
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # Would you Rather Command
-    if message.content.startswith('.wyr'):
-        print("Would You Rather Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        # Choose a random question
-        question = random.choice(questions_wyr)
-
-        # Create the embed message
-        embedwyr = discord.Embed(title="**Would You Rather**")
-        embedwyr.add_field(name="Option 1", value=question[0], inline=False)
-        embedwyr.add_field(name="Option 2", value=question[1], inline=False)
-
-        # Send the message
-        message = await message.channel.send(embed=embedwyr)
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    # This or That Command
-    if message.content.startswith('.tort'):
-        print(f"This or That Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        question = random.choice(questions_tort)
-        embed = discord.Embed(title="This or That", description=question)
-        message = await message.channel.send(embed=embed)
-
-        button2 = Button(
-            label="Invite Bot",
-            url=
-            "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-        button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-
-        if random.random() < 0.25:
-            view = View()
-            view.add_item(button2)
-            view.add_item(button3)
-            await message.channel.send(
-                "Dont forget to **Invite the Bot to your server** and **Vote** for it!", view=view)
-
-    copypastestopwatch = {}
-
-    # Copy Paste Game Command
-    if message.content.startswith('.copypaste'):
-        print("Copy Paste Game Command Executed by " + str(message.author))
-        
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-            
-        user_id = message.author
-        sentence = random.choice(sentences)
-        copypastestopwatch[user_id] = time.time()
-        await message.channel.send(embed=discord.Embed(
-            title="Copy Paste",
-            description=
-            f"Copy Paste the following sentence in the chat as fast as you can:\n\n`{sentence}`"
-        ))
-        copypastestopwatch[user_id] = time.time()
-
-        def copypaste_check(msg):
-            return msg.author == message.author and msg.channel == message.channel
-
-        answer = await client.wait_for('message',
-                                       check=copypaste_check,
-                                       timeout=30)
-        answer = str(answer.content)
-
-        if answer == sentence:
-            start_time = copypastestopwatch.pop(user_id)
-            elapsed_time = time.time() - start_time
-            await message.channel.send(embed=discord.Embed(
-                title="You got it right...",
-                description=f"in `{elapsed_time:.3f}` seconds"))
-        else:
-            await message.channel.send(embed=discord.Embed(
-                title="Wrong!",
-                description="The text that you entered is incorrect."))
-
-    # Invite Command
-    if message.content.startswith('.invite'):
-        print("Invite Command Executed by " + str(message.author))
-
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        result = cursor.fetchone()
-        if result:
-            print(f"Record already exists for {message.author}.")
-            cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(message.author) + "'")
-            database.commit()
-        else:
-            # Insert new record
-            insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-            cursor.execute(insert_sql, (str(message.author), 0))
-            database.commit()
-            print("New record inserted.")
-
-        await message.channel.send(
-            f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-        )
-
-    # Statistics Command
-    if message.content.startswith('.stats'):
-        print("Stats Command Executed by " + str(message.author))
-        cursor.execute("SELECT * FROM stats WHERE username='" + str(message.author) + "'")
-        stats = cursor.fetchone()
-        totalCommands = stats[1]
-        if stats:
-            embedvar = discord.Embed(
-                title="Statistics",
-                description=
-                f"**Total Commands Executed by {message.author}:** `{totalCommands}`"
-            )
-            await message.channel.send(embed=embedvar)
-        else:
-            await message.channel.send(
-                f"**You have not executed any commands yet. (The Statistics command is not counted as a command.)**"
-            )
-
+story = [
+    "The night sky cracked open with a flash, and something fell from the stars.",
+    "As the train pulled away, she realized her suitcase was still on the platform.",
+    "He found an old, locked diary hidden in the attic—one that had his name on it.",
+    "Every mirror in the house reflected a different version of her.",
+    "The letter arrived 20 years late, but it still changed everything.",
+    "Nobody ever returned from the forest after midnight—until now.",
+    "She woke up with no memory and a note in her hand: 'Trust no one.'",
+    "The town disappeared from the map, but not from his memories.",
+    "He could hear music coming from the walls, and no one else could.",
+    "The painting in the museum blinked at her.",
+    "Every morning, the calendar reset to the same date.",
+    "The last message on the phone read: 'Don’t answer the door.'",
+    "She wasn’t alone on the island—someone had lit a fire.",
+    "He was born with a map on his palm—and today it started glowing.",
+    "The vending machine dispensed a note that read: 'You’re being watched.'",
+    "They told her not to press the red button. She did anyway.",
+    "The dog came home with a key tied around its neck.",
+    "The radio started playing a station that hadn’t broadcast in 50 years.",
+    "He stepped into the elevator, but it didn’t stop on any known floor.",
+    "Each book in the library was filled with stories from her dreams."
+]
+
+button1 = Button(label="Support Server",
+     url="https://discord.gg/7sdx7PAtRh")
+
+button2 = Button(
+    label="Invite Bot",
+    url=
+    "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=962073020480&integration_type=0&scope=bot"
+)
+
+button3 = Button(label="Vote",
+                 url="https://top.gg/bot/1226467038113828884")
+
+# Recording data to Database
+def cmdexecuted(user):
+    cursor.execute("SELECT * FROM stats WHERE username='" + str(user) + "'")
+    result = cursor.fetchone()
+    if result:
+        print(f"Record already exists for {user}.")
+        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(user) + "'")
+        db.commit()
+    else:
+        # Insert new record
+        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
+        cursor.execute(insert_sql, (str(user), 0))
+        db.commit()
+        print("New record inserted.")
+    
 # ------------------------ ADMIN ONLY COMMANDS ------------------------ #
 
 # List of allowed server IDs
-    ALLOWED_GUILD_IDS = [1256973532462710936, 1268165953443856495]
-
-    # Update Status Command
-    def is_allowed_guild(message):
-        return message.guild.id in ALLOWED_GUILD_IDS
-
-    # ADMIN: Update Status Command
-    if message.content.startswith('.admin:updatestatus'):
-        if is_allowed_guild(message):
-            total_servers = 0
-            
-            for guild in client.guilds:
-                total_servers += 1
-
-            await message.channel.send(f"Total Servers: {total_servers}")
-            
-            # Status of the Bot
-            await client.change_presence(
-                status=discord.Status.idle,
-                activity=discord.Activity(type=discord.ActivityType.playing,
-                                          name=f"in {total_servers} Servers"))
-            await message.channel.send('Updated Status!')
-        else:
-            await message.channel.send('Restricted command.')
+ALLOWED_GUILD_IDS = [1256973532462710936, 1268165953443856495]
 
 # ------------------------ SLASH COMMANDS ------------------------ #
 
@@ -1607,40 +644,16 @@ async def on_message(message):
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     embedvar = discord.Embed(
         title="About Gingery",
         description=
-        ("Gingery is a Discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can Report me a Bug by sending me a DM (@gingerlawyer97).` \n\n Developed by **GingerLawyer97**."
+        ("Gingery is a open source discord bot, **made using Python**, that provides various **minigames** for your discord server members to play with! \n\n Type `.help` to see the list of commands. \n\n `Note: Gingery is still in development, so expect bugs and glitches. You can report a bug by creating a ticket in our support server.` \n\n Developed by **GingerLawyer97**."
          ))
     embedvar.set_thumbnail(
         url='https://share.creavite.co/666c1a52506029c631efc84b.gif')
-    embedvar.set_footer(text='Version 0.2.3')
-
-    # Create buttons
-    button1 = Button(label="Support Server",
-                     url="https://discord.gg/7sdx7PAtRh")
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-   
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
+    embedvar.set_footer(text=f'Version {version}')
 
     # Create a view and add the buttons to it
     view = View()
@@ -1656,18 +669,7 @@ async def about(interaction: discord.Interaction):
 async def help(interaction: discord.Interaction, page: str):
     print("Help Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     choices = ['1', '2', '3']
 
@@ -1760,34 +762,13 @@ async def help(interaction: discord.Interaction, page: str):
 async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     radnum = randrange(1, 7)
     await interaction.response.send_message(embed = discord.Embed(
         title=f"{interaction.user} rolled a Dice!",
         description=f"The Dice rolled a **{radnum}**!"
     ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -1804,18 +785,7 @@ async def rolladice(interaction: discord.Interaction):
 async def coinflip(interaction: discord.Interaction):
     print("Coinflip Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
     
     coinflip = randrange(-1, 2)
     if coinflip == 1:
@@ -1829,17 +799,6 @@ async def coinflip(interaction: discord.Interaction):
                                                     description=f"The Coin landed on **Tails**!"
                                                 ))
 
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
@@ -1851,63 +810,38 @@ async def coinflip(interaction: discord.Interaction):
 
 
 # Rock Paper Scissors Slash Command
-@client.tree.command(name='rps',
-                     description='Play Rock Paper Scissors with the Bot.')
-async def rps(interaction: discord.Interaction, choice: str):
+@client.tree.command(name='rockpaperscissors', description='Play Rock Paper Scissors with the Bot.')
+@app_commands.choices(choice=[
+    app_commands.Choice(name="Rock", value="rock"),
+    app_commands.Choice(name="Paper", value="paper"),
+    app_commands.Choice(name="Scissors", value="scissors"),
+    ])
+async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]):
     print("RPS Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
-    choices = ['rock', 'paper', 'scissors']
+    bot_choices = ['rock', 'paper', 'scissors']
+    bot_choice = random.choice(bot_choices)
 
-    if choice not in choices:
-        await interaction.response.send_message(
-            f'Invalid choice! Please choose either rock, paper, or scissors.\nExample: `/rps rock`'
-        )
-        return
-
-    bot_choice = random.choice(choices)
-
-    if choice == bot_choice:
+    if choice.value == bot_choice:
         await interaction.response.send_message(embed = discord.Embed(
             title="Tie!",
             description="Both choose the same thing!"
         ))
-    elif (choice == 'rock' and bot_choice == 'scissors') or \
-        (choice == 'paper' and bot_choice == 'rock') or \
-        (choice == 'scissors' and bot_choice == 'paper'):
+    elif (choice.value == 'rock' and bot_choice == 'scissors') or \
+        (choice.value == 'paper' and bot_choice == 'rock') or \
+        (choice.value == 'scissors' and bot_choice == 'paper'):
         await interaction.response.send_message(embed = discord.Embed(
             title="You Win!",
-            description=f"You choose `{choice}` and the Bot choose `{bot_choice}`!"
+            description=f"You choose `{choice.value}` and the Bot choose `{bot_choice}`!"
         ))
     else:
         await interaction.response.send_message(embed = discord.Embed(
             title="You Lose!",
-            description=f"You choose `{choice}` and the Bot choose `{bot_choice}`!"
+            description=f"You choose `{choice.value}` and the Bot choose `{bot_choice}`!"
         ))
 
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
-    
     if random.random() < 0.25:
         view = View()
         view.add_item(button2)
@@ -1923,18 +857,7 @@ async def rps(interaction: discord.Interaction, choice: str):
 async def highlow(interaction: discord.Interaction):
     print("HighLow Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     number = random.randint(1,
                             100)  # Generate a random number between 1 and 100
@@ -1979,17 +902,6 @@ async def highlow(interaction: discord.Interaction):
         title="You Lose!",
         description=f"You ran out of attempts. The number was: `{number}`!"
     ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2007,18 +919,7 @@ async def highlow(interaction: discord.Interaction):
 async def scramble(interaction: discord.Interaction):
     print("Scramble Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     word = random.choice(WORDS)
     scrambled_word = ''.join(random.sample(word, len(word)))
@@ -2051,17 +952,6 @@ async def scramble(interaction: discord.Interaction):
             title="You Lose!",
             description=f"Sorry, that's not the correct word. The word was: `{word}`!"
         ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2078,18 +968,7 @@ async def scramble(interaction: discord.Interaction):
 async def trivia(interaction: discord.Interaction):
     print("Trivia Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     question = random.choice(trivia_questions)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2119,17 +998,6 @@ async def trivia(interaction: discord.Interaction):
                 title="Incorrect!",
                 description=f"Sorry, that's not the correct answer. The answer was: `{question['answer']}`!"
             ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2146,18 +1014,7 @@ async def trivia(interaction: discord.Interaction):
 async def riddle(interaction: discord.Interaction):
     print("Riddle Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     question = random.choice(riddle_questions)
     await interaction.response.send_message(embed = discord.Embed(
@@ -2186,17 +1043,6 @@ async def riddle(interaction: discord.Interaction):
                 title="Incorrect!",
                 description=f"Sorry, that's not the correct answer. The answer was: `{question['answer']}`!"
             ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2213,35 +1059,13 @@ async def riddle(interaction: discord.Interaction):
 async def ball(interaction: discord.Interaction, question: str):
     print("8ball Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     response = random.choice(eight_ball_responses)
     await interaction.response.send_message(embed = discord.Embed(
         title="8Ball!",
         description=f"You asked: `{question}`\nThe Bot's Answer is: `{response}`"
     ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2254,23 +1078,11 @@ async def ball(interaction: discord.Interaction, question: str):
 
 
 # Truth or Dare Slash Command
-@client.tree.command(name='truthordare',
-                     description='The Bot gives you a Truth or a Dare.')
+@client.tree.command(name='truthordare', description='The Bot gives you a Truth or a Dare.')
 async def truthordare(interaction: discord.Interaction, choice: str):
     print("TD Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     choices = ['truth', 'dare']
 
@@ -2290,17 +1102,6 @@ async def truthordare(interaction: discord.Interaction, choice: str):
             title="Dare!",
             description=f"Dare: `{random.choice(dares)}`"
         ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2317,35 +1118,13 @@ async def truthordare(interaction: discord.Interaction, choice: str):
 async def fact(interaction: discord.Interaction):
     print("Fact Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     fact = random.choice(facts)
     await interaction.response.send_message(embed = discord.Embed(
         title="Here's an Random Fact!",
         description=f"Fact: `{fact}`"
     ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2362,35 +1141,13 @@ async def fact(interaction: discord.Interaction):
 async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     joke = random.choice(joke_)
     await interaction.response.send_message(embed = discord.Embed(
         title="Here's an Random Joke!",
         description=f"Joke: `{joke}`"
     ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2407,18 +1164,7 @@ async def jokes(interaction: discord.Interaction):
 async def quote(interaction: discord.Interaction):
     print("Quote Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     # Choose a Random Qoute
     quote = random.choice(quotes)
@@ -2427,17 +1173,6 @@ async def quote(interaction: discord.Interaction):
         title="Here's an Random Quote!",
         description=f"Quote: `{quote}`"
     ))
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2456,18 +1191,7 @@ async def quote(interaction: discord.Interaction):
 async def wyr(interaction: discord.Interaction):
     print("Would You Rather Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     # Choose a random question
     question = random.choice(questions_wyr)
@@ -2479,17 +1203,6 @@ async def wyr(interaction: discord.Interaction):
 
     # Send the message and capture the sent message object
     message = await interaction.response.send_message(embed=embedwyr)
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2507,34 +1220,12 @@ async def wyr(interaction: discord.Interaction):
 async def tort(interaction: discord.Interaction):
     print(f"This or that Command Executed by {interaction.user}")
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     question = random.choice(questions_tort)
     embed = discord.Embed(title="This or That", description=f"{random.choice(questions_tort)}")
 
     message = await interaction.response.send_message(embed=embed)
-
-    button2 = Button(
-        label="Invite Bot",
-        url=
-        "https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
-    )
-
-  
-    
-    button3 = Button(label="Vote",
-                         url="https://top.gg/bot/1226467038113828884")
     
     if random.random() < 0.25:
         view = View()
@@ -2557,18 +1248,7 @@ copypastestopwatch = {}
 async def copypaste(interaction: discord.Interaction):
     print("Copy Paste Game Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
         
     user_id = interaction.user
     sentence = random.choice(sentences)
@@ -2599,6 +1279,38 @@ async def copypaste(interaction: discord.Interaction):
             description=f"The sentence you copied was wrong! The Sentence was: `{sentence}`"
         ))
 
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        view.add_item(button3)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
+            view=view,
+            ephemeral=True)
+
+# Story Slash Command
+@client.tree.command(name='story', description='The Bot starts a random story.')
+async def radnomStory(interaction: discord.Interaction):
+    print("Story Command Executed by " + str(interaction.user))
+
+    cmdexecuted(interaction.user)
+
+    random_story = random.choice(story)
+    storyEmbed = discord.Embed(
+        title="Start a story!",
+        description=random_story
+    )
+    storyEmbed.set_footer(text="Continue the story by typing your own sentence.")
+    await interaction.response.send_message(embed = storyEmbed)
+
+    if random.random() < 0.25:
+        view = View()
+        view.add_item(button2)
+        view.add_item(button3)
+        await interaction.followup.send(
+            "Dont forget to **Invite the Bot to your server** and **Vote** for it!",
+            view=view,
+            ephemeral=True)
 
 # Invite Slash Command
 @client.tree.command(name='invite',
@@ -2606,21 +1318,10 @@ async def copypaste(interaction: discord.Interaction):
 async def invite(interaction: discord.Interaction):
     print("Invite Command Executed by " + str(interaction.user))
 
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {interaction.user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(interaction.user) + "'")
-        database.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(interaction.user), 0))
-        database.commit()
-        print("New record inserted.")
+    cmdexecuted(interaction.user)
 
     await interaction.response.send_message(
-        f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=8&integration_type=0&scope=bot"
+        f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=962073020480&integration_type=0&scope=bot"
     )
 
 # Stats Slash Command
@@ -2638,7 +1339,7 @@ async def stats(interaction: discord.Interaction):
         )
         await interaction.response.send_message(embed=embedvar)
     else:
-        await interaction.response.send_message("**You have not executed any commands yet. (The Statistics command is not counted as a command.)**")
+        await interaction.response.send_message("**You have not executed any commands yet. (The Statistics command is not counted as a command obv.)**")
 
 # ------------------------ TOKEN ------------------------ #
 
