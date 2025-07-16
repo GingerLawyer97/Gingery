@@ -43,6 +43,14 @@ db = mysql.connector.connect(
     database="s97085_Statistics"
 )
 
+def connectToDB():
+    db = mysql.connector.connect(
+        host="mysql.db.bot-hosting.net",
+        user=username,
+        password=password,
+        database="s97085_Statistics"
+    )
+
 cursor = db.cursor()
 
 @client.event
@@ -644,6 +652,7 @@ ALLOWED_GUILD_IDS = [1256973532462710936, 1268165953443856495]
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     embedvar = discord.Embed(
@@ -669,6 +678,7 @@ async def about(interaction: discord.Interaction):
 async def help(interaction: discord.Interaction, page: str):
     print("Help Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     choices = ['1', '2', '3']
@@ -762,6 +772,7 @@ async def help(interaction: discord.Interaction, page: str):
 async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     radnum = randrange(1, 7)
@@ -785,6 +796,7 @@ async def rolladice(interaction: discord.Interaction):
 async def coinflip(interaction: discord.Interaction):
     print("Coinflip Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
     
     coinflip = randrange(-1, 2)
@@ -819,6 +831,7 @@ async def coinflip(interaction: discord.Interaction):
 async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]):
     print("RPS Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     bot_choices = ['rock', 'paper', 'scissors']
@@ -857,6 +870,7 @@ async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]
 async def highlow(interaction: discord.Interaction):
     print("HighLow Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     number = random.randint(1,
@@ -919,6 +933,7 @@ async def highlow(interaction: discord.Interaction):
 async def scramble(interaction: discord.Interaction):
     print("Scramble Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     word = random.choice(WORDS)
@@ -968,6 +983,7 @@ async def scramble(interaction: discord.Interaction):
 async def trivia(interaction: discord.Interaction):
     print("Trivia Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     question = random.choice(trivia_questions)
@@ -1014,6 +1030,7 @@ async def trivia(interaction: discord.Interaction):
 async def riddle(interaction: discord.Interaction):
     print("Riddle Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     question = random.choice(riddle_questions)
@@ -1059,6 +1076,7 @@ async def riddle(interaction: discord.Interaction):
 async def ball(interaction: discord.Interaction, question: str):
     print("8ball Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     response = random.choice(eight_ball_responses)
@@ -1082,6 +1100,7 @@ async def ball(interaction: discord.Interaction, question: str):
 async def truthordare(interaction: discord.Interaction, choice: str):
     print("TD Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     choices = ['truth', 'dare']
@@ -1118,6 +1137,7 @@ async def truthordare(interaction: discord.Interaction, choice: str):
 async def fact(interaction: discord.Interaction):
     print("Fact Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     fact = random.choice(facts)
@@ -1141,6 +1161,7 @@ async def fact(interaction: discord.Interaction):
 async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     joke = random.choice(joke_)
@@ -1164,6 +1185,7 @@ async def jokes(interaction: discord.Interaction):
 async def quote(interaction: discord.Interaction):
     print("Quote Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     # Choose a Random Qoute
@@ -1191,6 +1213,7 @@ async def quote(interaction: discord.Interaction):
 async def wyr(interaction: discord.Interaction):
     print("Would You Rather Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     # Choose a random question
@@ -1220,6 +1243,7 @@ async def wyr(interaction: discord.Interaction):
 async def tort(interaction: discord.Interaction):
     print(f"This or that Command Executed by {interaction.user}")
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     question = random.choice(questions_tort)
@@ -1248,6 +1272,7 @@ copypastestopwatch = {}
 async def copypaste(interaction: discord.Interaction):
     print("Copy Paste Game Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
         
     user_id = interaction.user
@@ -1293,6 +1318,7 @@ async def copypaste(interaction: discord.Interaction):
 async def radnomStory(interaction: discord.Interaction):
     print("Story Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     random_story = random.choice(story)
@@ -1318,6 +1344,7 @@ async def radnomStory(interaction: discord.Interaction):
 async def invite(interaction: discord.Interaction):
     print("Invite Command Executed by " + str(interaction.user))
 
+    connectToDB()
     cmdexecuted(interaction.user)
 
     await interaction.response.send_message(
