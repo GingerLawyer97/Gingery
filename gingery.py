@@ -1,6 +1,6 @@
 # GINGERY DISCORD BOT
 # Made by @GingerLawyer97
-version = '0.2.4'
+version = '0.2.5'
 #
 # ------------------------ LIBRARIES ------------------------ #
 
@@ -31,27 +31,6 @@ client = commands.Bot(command_prefix=['.'], intents=intents)
 # ------------------------ STARTUP ------------------------ #
 
 load_dotenv()
-
-# Database Connection
-username = os.environ['dbUser']
-password = os.environ['dbPass']
-
-db = mysql.connector.connect(
-    host="mysql.db.bot-hosting.net",
-    user=username,
-    password=password,
-    database="s97085_Statistics"
-)
-
-def connectToDB():
-    db = mysql.connector.connect(
-        host="mysql.db.bot-hosting.net",
-        user=username,
-        password=password,
-        database="s97085_Statistics"
-    )
-
-cursor = db.cursor()
 
 @client.event
 async def on_ready():
@@ -623,21 +602,6 @@ button2 = Button(
 
 button3 = Button(label="Vote",
                  url="https://top.gg/bot/1226467038113828884")
-
-# Recording data to Database
-def cmdexecuted(user):
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(user) + "'")
-    result = cursor.fetchone()
-    if result:
-        print(f"Record already exists for {user}.")
-        cursor.execute("UPDATE stats SET totalCommands=totalCommands + 1 WHERE username='" + str(user) + "'")
-        db.commit()
-    else:
-        # Insert new record
-        insert_sql = "INSERT INTO stats (username, totalCommands) VALUES (%s, %s)"
-        cursor.execute(insert_sql, (str(user), 0))
-        db.commit()
-        print("New record inserted.")
     
 # ------------------------ ADMIN ONLY COMMANDS ------------------------ #
 
@@ -651,9 +615,6 @@ ALLOWED_GUILD_IDS = [1256973532462710936, 1268165953443856495]
 @client.tree.command(name='about', description='Description about the bot.')
 async def about(interaction: discord.Interaction):
     print("About Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     embedvar = discord.Embed(
         title="About Gingery",
@@ -677,9 +638,6 @@ async def about(interaction: discord.Interaction):
 @client.tree.command(name='help', description='List of commands.')
 async def help(interaction: discord.Interaction, page: str):
     print("Help Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     choices = ['1', '2', '3']
 
@@ -757,9 +715,6 @@ async def help(interaction: discord.Interaction, page: str):
             value=
             "- Copy & Paste a random sentence while trying to get the best time.",
             inline=False)
-        embedvar3.add_field(name="`.stats`",
-            value="- Shows your Statistics.",
-            inline=False)
         embedvar3.add_field(name="`.invite`",
                             value="- Invite the Bot to your Server.",
                             inline=False)
@@ -771,9 +726,6 @@ async def help(interaction: discord.Interaction, page: str):
 @client.tree.command(name='rolladice', description='Roll a dice.')
 async def rolladice(interaction: discord.Interaction):
     print("Rolladice Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     radnum = randrange(1, 7)
     await interaction.response.send_message(embed = discord.Embed(
@@ -795,9 +747,6 @@ async def rolladice(interaction: discord.Interaction):
 @client.tree.command(name='coinflip', description='Flips a Coin.')
 async def coinflip(interaction: discord.Interaction):
     print("Coinflip Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
     
     coinflip = randrange(-1, 2)
     if coinflip == 1:
@@ -830,9 +779,6 @@ async def coinflip(interaction: discord.Interaction):
     ])
 async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]):
     print("RPS Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     bot_choices = ['rock', 'paper', 'scissors']
     bot_choice = random.choice(bot_choices)
@@ -869,9 +815,6 @@ async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]
 @client.tree.command(name='highlow', description='Play High Low with the Bot.')
 async def highlow(interaction: discord.Interaction):
     print("HighLow Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     number = random.randint(1,
                             100)  # Generate a random number between 1 and 100
@@ -933,9 +876,6 @@ async def highlow(interaction: discord.Interaction):
 async def scramble(interaction: discord.Interaction):
     print("Scramble Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     word = random.choice(WORDS)
     scrambled_word = ''.join(random.sample(word, len(word)))
     await interaction.response.send_message(embed = discord.Embed(
@@ -983,9 +923,6 @@ async def scramble(interaction: discord.Interaction):
 async def trivia(interaction: discord.Interaction):
     print("Trivia Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     question = random.choice(trivia_questions)
     await interaction.response.send_message(embed = discord.Embed(
         title="Trivia Question!",
@@ -1030,9 +967,6 @@ async def trivia(interaction: discord.Interaction):
 async def riddle(interaction: discord.Interaction):
     print("Riddle Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     question = random.choice(riddle_questions)
     await interaction.response.send_message(embed = discord.Embed(
         title="Riddle!",
@@ -1076,9 +1010,6 @@ async def riddle(interaction: discord.Interaction):
 async def ball(interaction: discord.Interaction, question: str):
     print("8ball Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     response = random.choice(eight_ball_responses)
     await interaction.response.send_message(embed = discord.Embed(
         title="8Ball!",
@@ -1099,9 +1030,6 @@ async def ball(interaction: discord.Interaction, question: str):
 @client.tree.command(name='truthordare', description='The Bot gives you a Truth or a Dare.')
 async def truthordare(interaction: discord.Interaction, choice: str):
     print("TD Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     choices = ['truth', 'dare']
 
@@ -1137,9 +1065,6 @@ async def truthordare(interaction: discord.Interaction, choice: str):
 async def fact(interaction: discord.Interaction):
     print("Fact Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     fact = random.choice(facts)
     await interaction.response.send_message(embed = discord.Embed(
         title="Here's an Random Fact!",
@@ -1161,9 +1086,6 @@ async def fact(interaction: discord.Interaction):
 async def jokes(interaction: discord.Interaction):
     print("Joke Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     joke = random.choice(joke_)
     await interaction.response.send_message(embed = discord.Embed(
         title="Here's an Random Joke!",
@@ -1184,9 +1106,6 @@ async def jokes(interaction: discord.Interaction):
 @client.tree.command(name='quote', description='The Bot tells you a Quote.')
 async def quote(interaction: discord.Interaction):
     print("Quote Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     # Choose a Random Qoute
     quote = random.choice(quotes)
@@ -1212,9 +1131,6 @@ async def quote(interaction: discord.Interaction):
     description='The Bot asks you a Would You Rather Question.')
 async def wyr(interaction: discord.Interaction):
     print("Would You Rather Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
 
     # Choose a random question
     question = random.choice(questions_wyr)
@@ -1243,9 +1159,6 @@ async def wyr(interaction: discord.Interaction):
 async def tort(interaction: discord.Interaction):
     print(f"This or that Command Executed by {interaction.user}")
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     question = random.choice(questions_tort)
     embed = discord.Embed(title="This or That", description=f"{random.choice(questions_tort)}")
 
@@ -1271,9 +1184,6 @@ copypastestopwatch = {}
     'Copy & Paste a random sentence while trying to get the best time.')
 async def copypaste(interaction: discord.Interaction):
     print("Copy Paste Game Command Executed by " + str(interaction.user))
-
-    connectToDB()
-    cmdexecuted(interaction.user)
         
     user_id = interaction.user
     sentence = random.choice(sentences)
@@ -1318,9 +1228,6 @@ async def copypaste(interaction: discord.Interaction):
 async def radnomStory(interaction: discord.Interaction):
     print("Story Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     random_story = random.choice(story)
     storyEmbed = discord.Embed(
         title="Start a story!",
@@ -1344,29 +1251,9 @@ async def radnomStory(interaction: discord.Interaction):
 async def invite(interaction: discord.Interaction):
     print("Invite Command Executed by " + str(interaction.user))
 
-    connectToDB()
-    cmdexecuted(interaction.user)
-
     await interaction.response.send_message(
         f"# Invite the Bot to your server: \n\n - **INVITE LINK**: https://discord.com/oauth2/authorize?client_id=1226467038113828884&permissions=962073020480&integration_type=0&scope=bot"
     )
-
-# Stats Slash Command
-@client.tree.command(name='stats', description='Shows your statistics.')
-async def stats(interaction: discord.Interaction):
-    print("Stats Command Executed by " + str(interaction.user))
-    cursor.execute("SELECT * FROM stats WHERE username='" + str(interaction.user) + "'")
-    stats = cursor.fetchone()
-    totalCommands = stats[1]
-    if stats:
-        embedvar = discord.Embed(
-            title="Statistics",
-            description=
-            f"**Total Commands Executed by {interaction.user}:** `{totalCommands}`"
-        )
-        await interaction.response.send_message(embed=embedvar)
-    else:
-        await interaction.response.send_message("**You have not executed any commands yet. (The Statistics command is not counted as a command obv.)**")
 
 # ------------------------ TOKEN ------------------------ #
 
