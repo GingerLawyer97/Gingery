@@ -1,5 +1,5 @@
 # ============================================================
-#   GINGERY DISCORD BOT  •  v0.4.0
+#   GINGERY DISCORD BOT  •  v0.3.0
 #   Made by @GingerLawyer97
 # ============================================================
 
@@ -28,8 +28,8 @@ log = logging.getLogger("Gingery")
 # ── Config ────────────────────────────────────────────────────
 load_dotenv()
 
-VERSION    = "0.4.0"
-BOT_COLOR  = 0xE67E22
+VERSION    = "0.3.0"
+BOT_COLOR  = 0x9B59B6
 INVITE_URL = (
     "https://discord.com/oauth2/authorize"
     "?client_id=1226467038113828884"
@@ -615,11 +615,12 @@ async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]
         line += "Better luck next time!"
         won   = False
 
+    await interaction.response.defer()
     c, x = record_game(
         interaction.user.id, interaction.guild_id, str(interaction.user),
         "rps_played", "rps_wins", won
     )
-    await interaction.response.send_message(embed=embed(title, line + reward_line(c, x)))
+    await interaction.followup.send(embed=embed(title, line + reward_line(c, x)))
     await maybe_promo(interaction)
 
 
@@ -627,7 +628,6 @@ async def rps(interaction: discord.Interaction, choice: app_commands.Choice[str]
 async def highlow(interaction: discord.Interaction):
     log.info(f"/highlow — {interaction.user}")
     number = random.randint(1, 100)
-    db.ensure_user(interaction.user.id, interaction.guild_id, str(interaction.user))
 
     e = embed(
         "🔢 Guess the Number!",
@@ -635,6 +635,7 @@ async def highlow(interaction: discord.Interaction):
         "You have **7 attempts** and **30 s** per guess."
     )
     await interaction.response.send_message(embed=e)
+    db.ensure_user(interaction.user.id, interaction.guild_id, str(interaction.user))
 
     def check(m):
         return m.author == interaction.user and m.channel == interaction.channel
@@ -731,13 +732,13 @@ _cp_timers: dict = {}
 async def copypaste(interaction: discord.Interaction):
     log.info(f"/copypaste — {interaction.user}")
     sentence = random.choice(COPY_PASTE_SENTENCES)
-    db.ensure_user(interaction.user.id, interaction.guild_id, str(interaction.user))
 
     e = embed(
         "⌨️ Copy-Paste Challenge",
         f"Type this sentence as fast as you can:\n\n> {sentence}\n\nYou have **30 seconds**."
     )
     await interaction.response.send_message(embed=e)
+    db.ensure_user(interaction.user.id, interaction.guild_id, str(interaction.user))
     _cp_timers[interaction.user.id] = time.perf_counter()
 
     def check(m):
@@ -847,17 +848,20 @@ async def stats(interaction: discord.Interaction, member: discord.Member = None)
 @bot.tree.command(name="balance", description="Check your coin balance.")
 @app_commands.describe(member="The user to check (defaults to you)")
 async def balance(interaction: discord.Interaction, member: discord.Member = None):
+    log.info(f"/balance — {interaction.user}")
     target = member or interaction.user
+    await interaction.response.defer()
     db.ensure_user(target.id, interaction.guild_id, str(target))
     row = db.get_stats(target.id, interaction.guild_id)
     coins = row["coins"] if row else 0
     e = embed("🪙 Coin Balance", f"{target.mention} has **{coins:,} coins**.")
-    await interaction.response.send_message(embed=e)
+    await interaction.followup.send(embed=e)
 
 
 @bot.tree.command(name="daily", description="Claim your daily coins reward.")
 async def daily(interaction: discord.Interaction):
     log.info(f"/daily — {interaction.user}")
+    await interaction.response.defer()
     db.ensure_user(interaction.user.id, interaction.guild_id, str(interaction.user))
     result = db.claim_daily(interaction.user.id, interaction.guild_id)
 
@@ -880,7 +884,7 @@ async def daily(interaction: discord.Interaction):
             f"Come back **tomorrow** to continue your {result['streak']}-day streak!",
             color=0xE74C3C,
         )
-    await interaction.response.send_message(embed=e)
+    await interaction.followup.send(embed=e)
 
 # ════════════════════════════════════════════════════════════
 #   LEADERBOARD

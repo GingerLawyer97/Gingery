@@ -112,12 +112,40 @@ def create_tables() -> None:
             cur.execute(ddl)
         cur.close()
         log.info("Tables verified / created.")
+        _migrate(conn)
     except Error as e:
         log.error(f"create_tables: {e}")
         raise
     finally:
         if conn and conn.is_connected():
             conn.close()
+
+
+# Columns that may be missing on existing installs: (sql_type, default_clause)
+_MIGRATIONS = {
+    "riddle_wins":      ("INT",   "DEFAULT 0"),
+    "riddle_played":    ("INT",   "DEFAULT 0"),
+    "copypaste_played": ("INT",   "DEFAULT 0"),
+    "best_copypaste":   ("FLOAT", "DEFAULT 0.0"),
+    "total_xp":         ("INT",   "DEFAULT 0"),
+}
+
+
+def _migrate(conn) -> None:
+    """Safely add any columns missing from the live stats table."""
+    try:
+        cur = conn.cursor()
+        cur.execute("SHOW COLUMNS FROM stats")
+        existing = {row[0] for row in cur.fetchall()}
+        for col, (col_type, default) in _MIGRATIONS.items():
+            if col not in existing:
+                cur.execute(
+                    f"ALTER TABLE stats ADD COLUMN {col} {col_type} {default}"
+                )
+                log.info(f"Migration: added column stats.{col}")
+        cur.close()
+    except Error as e:
+        log.error(f"_migrate: {e}")
 
 
 # ── User bootstrap ────────────────────────────────────────────
